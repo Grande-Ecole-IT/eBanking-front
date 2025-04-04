@@ -11,14 +11,14 @@ const TRANSACTIONS_COLLECTION_ID = "transactions";
  * @param {string} type - Type de transaction soit envoi | reception
  * @returns {Promise<Object>}
  */
-export async function createTransaction(sender, receiver, motif, montant, type) {
+export async function createTransaction(senderId, receiverId, motif, montant, type) {
     return await databases.createDocument(
         DATABASE_ID,
         TRANSACTIONS_COLLECTION_ID,
         ID.unique(),
         {
-            sender,
-            receiver,
+            senderId,
+            receiverId,
             motif,
             montant,
             type

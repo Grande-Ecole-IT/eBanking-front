@@ -9,8 +9,6 @@ const UserInfoCard = () => {
   const user = provider?.user;
   const navigate = useNavigate();
 
-  console.log(user);
-
   const handleLogout = async (e) => {
     e.preventDefault();
 

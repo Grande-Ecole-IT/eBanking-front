@@ -1,12 +1,20 @@
 /* eslint-disable no-unused-vars */
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiSend } from "react-icons/fi";
 import { LuArrowRight } from "react-icons/lu";
+import { getAllUsers } from "../services/databases/users";
 import TransactionForm from "./TransactionForm";
 
 const MoneyTransferCard = () => {
   const [showModal, setShowModal] = useState(false);
+  const [users, setUsers] = useState(null);
+
+  useEffect(() => {
+    getAllUsers().then((res) => {
+      setUsers(res.documents);
+    });
+  }, []);
 
   return (
     <>
@@ -45,7 +53,10 @@ const MoneyTransferCard = () => {
               transition={{ type: "spring", damping: 10 }}
               className="relative w-full max-w-md"
             >
-              <TransactionForm onClose={() => setShowModal(false)} />
+              <TransactionForm
+                onClose={() => setShowModal(false)}
+                users={users}
+              />
             </motion.div>
           </div>
         )}
