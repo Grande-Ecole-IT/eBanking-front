@@ -23,7 +23,6 @@ function Login() {
       if (!provider?.user) {
         await provider?.login(formData.email, formData.password);
       }
-      console.log(provider?.user);
       navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
@@ -82,11 +81,15 @@ function Login() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Email
           </label>
           <input
             type="email"
+            id="email"
             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
             placeholder="Entrez votre email"
             value={formData.email}
@@ -96,11 +99,15 @@ function Login() {
           />
         </div>
         <div className="relative">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Mot de passe
           </label>
           <input
             type={showPassword ? "text" : "password"}
+            id="password"
             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
             placeholder="Entrez votre mot de passe"
             value={formData.password}

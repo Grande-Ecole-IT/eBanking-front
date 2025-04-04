@@ -5,7 +5,6 @@ import logo from "../assets/Logo.png";
 import BalanceCard from "../components/BalanceCard";
 import Button from "../components/Button";
 import ChatBot from "../components/ChatBot";
-import MainLoader from "../components/MainLoader";
 import MoneyTransferCard from "../components/MoneyTransferCard";
 import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
@@ -54,10 +53,6 @@ const Dashboard = () => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
-
-  if (provider.loading) {
-    return <MainLoader />;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 text-gray-900 overflow-hidden">

@@ -32,20 +32,10 @@ const TransactionForm = ({ onClose }) => {
     } catch (error) {
       console.log(error);
     }
-
-    // Simulation d'envoi
-    // setTimeout(() => {
-    //   setIsSubmitting(false);
-    //   setIsSuccess(true);
-    //   setTimeout(() => {
-    //     setIsSuccess(false);
-    //     onClose();
-    //   }, 2000);
-    // }, 1500);
   };
 
   useEffect(() => {
-    searchUsers("rasendraminosarobidy@gmail.com").then((res) => {
+    searchUsers({ email: "rasendraminosarobidy@gmail.com" }).then((res) => {
       console.log("heyyy");
       console.log(res);
     });
