@@ -19,6 +19,7 @@ const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
   const [transactions, setTransactions] = useState(null);
   const { user } = useAuth();
+  const provider = useAuth();
 
   useEffect(() => {
     try {
