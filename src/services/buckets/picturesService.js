@@ -41,15 +41,10 @@ export async function uploadProfilePicture(imageFile, userId) {
  * @param {number} [height=200] - Hauteur de l'image
  * @returns {string} URL de l'image
  */
-export function getProfilePicture(fileId, width = 200, height = 200) {
+export function getProfilePicture(fileId) {
     return storage.getFilePreview(
         STORAGE_BUCKET_ID,
-        fileId,
-        width,
-        height,
-        undefined,
-        undefined,
-        'top'
+        fileId
     );
 }
 
