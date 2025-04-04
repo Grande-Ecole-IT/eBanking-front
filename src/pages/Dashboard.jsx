@@ -194,8 +194,8 @@ const Dashboard = () => {
               </motion.div>
             </div>
           </div>
+          <HistoricalList historicals={historicals} />
         </div>
-        <HistoricalList historicals={historicals} />
       </div>
     </div>
   );
