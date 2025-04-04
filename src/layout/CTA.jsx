@@ -8,7 +8,7 @@ const CTA = () => (
     whileInView={{ scale: 1, opacity: 1 }}
     transition={{ duration: 0.6 }}
     viewport={{ once: true }}
-    className="text-center py-12 md:py-16 px-6 md:px-8 rounded-3xl bg-white/90 backdrop-blur-sm border border-blue-200 relative overflow-hidden shadow-lg mb-16 md:mb-24 lg:mb-32"
+    className="text-center py-12 md:py-16 px-6 md:px-8 rounded-3xl bg-white/90 backdrop-blur-sm border border-blue-200 relative overflow-hidden shadow-lg mb-16 md:mb-24 lg:mb-32 flex flex-col justify-center items-center"
   >
     <div className="absolute inset-0 overflow-hidden">
       <motion.div
