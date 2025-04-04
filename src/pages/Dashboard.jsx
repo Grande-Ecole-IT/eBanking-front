@@ -9,7 +9,6 @@ import MoneyTransferCard from "../components/MoneyTransferCard";
 import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
 import { useAuth } from "../hooks/useAuth";
-import HistoricalList from "../components/HistoricalList";
 import Background from "../layout/Background";
 import { searchUsers } from "../services/databases/users";
 
@@ -85,6 +84,7 @@ const Dashboard = () => {
       ipAddress: "85.203.45.12",
     },
   ];
+  const { user } = useAuth();
 
   const transactions = [
     {

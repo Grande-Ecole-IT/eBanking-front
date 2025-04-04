@@ -20,7 +20,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const fileInputRef = useRef(null);
-  const provider = useAuth();
+  const { signup } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ function Register() {
     setLoading(true);
 
     try {
-      await provider?.signup(
+      await signup(
         formData.email,
         formData.password,
         formData.name,
