@@ -1,1 +1,92 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #4338ca;
+  --color-secondary:  #3730a3;
+}
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.auth-container {
+  @apply min-h-screen flex;
+}
+
+.auth-left {
+  @apply hidden lg:flex lg:w-1/2 flex-col justify-center p-12 text-white relative overflow-hidden;
+  background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+}
+
+.auth-right {
+  @apply w-full lg:w-1/2 flex items-center justify-center p-6 bg-gray-50;
+}
+
+.auth-card {
+  @apply w-full max-w-md p-8 bg-white rounded-3xl shadow-xl;
+}
+
+.social-button {
+  @apply w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-gray-200 
+         hover:bg-gray-50 transition-colors duration-200 font-medium text-gray-700;
+}
+
+.input-field {
+  @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 
+         focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200;
+}
+
+.btn-primary {
+  @apply w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 
+         rounded-xl transition-all duration-200 flex items-center justify-center gap-2;
+}
+
+.divider {
+  @apply flex items-center text-gray-500 my-6;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  @apply flex-1 border-t border-gray-200;
+}
+
+.divider span {
+  @apply px-3;
+}
+
+.floating-shapes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.shape {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.shape-1 {
+  width: 300px;
+  height: 300px;
+  bottom: -150px;
+  left: -150px;
+}
+
+.shape-2 {
+  width: 200px;
+  height: 200px;
+  top: 50%;
+  right: -100px;
+}
