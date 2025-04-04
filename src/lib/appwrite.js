@@ -1,4 +1,4 @@
-import { Client, Account, Databases, Storage, ID } from 'appwrite';
+import { Account, Client, Databases, ID, Storage } from 'appwrite';
 
 const client = new Client()
     .setEndpoint('https://cloud.appwrite.io/v1')
@@ -10,4 +10,5 @@ const storage = new Storage(client);
 
 const DATABASE_ID = 'flashpay-db';
 
-export { client, account, databases, storage, ID, DATABASE_ID};   
+export { account, client, DATABASE_ID, databases, ID, storage };
+
