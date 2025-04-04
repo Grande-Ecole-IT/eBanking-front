@@ -25,3 +25,16 @@ export async function createTransaction(sender, receiver, motif, montant, type) 
         }
     );
 }
+
+/**
+ * Récupère les transactions d'un expéditeur particulier
+ * @param {string} senderId - ID de l'expéditeur
+ * @returns {Promise<Array<Object>>}
+ */
+export async function getTransactionsBySender(senderId) {
+    return await databases.listDocuments(
+        DATABASE_ID,
+        TRANSACTIONS_COLLECTION_ID,
+        [['sender', '=', senderId]]
+    );
+}
