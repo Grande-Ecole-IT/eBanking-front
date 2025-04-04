@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
 import Button from "../components/Button";
+import { NavLink } from "react-router";
 
 const Header = () => (
   <motion.header
@@ -26,10 +27,10 @@ const Header = () => (
       className="flex space-x-2 sm:space-x-3 md:space-x-4"
     >
       <Button variant="outline" size="md">
-        Connexion
+        <NavLink to="/login">Connexion</NavLink>
       </Button>
       <Button variant="primary" size="md">
-        Inscription
+        <NavLink to="/register">Inscription</NavLink>
       </Button>
     </motion.div>
   </motion.header>
