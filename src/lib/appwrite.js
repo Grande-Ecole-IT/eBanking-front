@@ -10,4 +10,4 @@ const storage = new Storage(client);
 
 const DATABASE_ID = 'flashpay-db';
 
-export { client, account, databases, storage, ID, DATABASE_ID};
+export { client, account, databases, storage, ID, DATABASE_ID};   

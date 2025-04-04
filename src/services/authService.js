@@ -11,7 +11,7 @@ import { createUserDocument, getUserDocument } from './databases/users';
 export async function createUser(email, password, name , profileImage = null) {
     try {
         // 1. Création du compte Auth
-        const authAccount = await account.create(ID, email, password, name);
+        const authAccount = await account.create(ID.unique(), email, password, name);
         
         // 2. Upload de l'image si fournie
         let profileImageId = null;
@@ -23,8 +23,7 @@ export async function createUser(email, password, name , profileImage = null) {
         const userData = {
             name,
             email,
-            profileImageId,
-            createdAt: new Date().toISOString()
+            picture: getProfilePicture(profileImageId),
         };
         
         await createUserDocument(authAccount.$id, userData);
@@ -54,13 +53,7 @@ export async function getCurrentUser() {
         const authAccount = await account.get();
         const userDocument = await getUserDocument(authAccount.$id);
         
-        return {
-            id: authAccount.$id,
-            email: authAccount.email,
-            name: authAccount.name,
-            ...userDocument,
-            profileImageUrl: getProfilePicture(userDocument.profileImageId)
-        };
+        return userDocument;
     } catch (error) {
         console.error('Erreur récupération utilisateur:', error);
         return null;
