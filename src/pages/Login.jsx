@@ -20,7 +20,9 @@ function Login() {
     setLoading(true);
 
     try {
-      await provider?.login(formData.email, formData.password);
+      if (!provider?.user) {
+        await provider?.login(formData.email, formData.password);
+      }
       console.log(provider?.user);
       navigate("/dashboard");
     } catch (error) {
