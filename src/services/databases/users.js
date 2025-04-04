@@ -32,9 +32,8 @@ export async function getUserDocument(userId) {
 
 /**
  * Recherche des utilisateurs selon différents critères
- * @param {Object} [searchParams] - Paramètres de recherche
- * @param {string} [searchParams.name] - Nom à rechercher
- * @param {string} [searchParams.email] - Email à rechercher
+ * @param {string} name - Nom à rechercher
+ * @param {string} email - Email à rechercher
  * @returns {Promise<Array<Object>>}
  */
 export async function searchUsers(name, email) {
@@ -52,5 +51,16 @@ export async function searchUsers(name, email) {
         DATABASE_ID,
         USER_COLLECTION_ID,
         queries.length > 0 ? queries : undefined
+    );
+}
+
+/**
+ * Récupère tous les utilisateurs
+ * @returns {Promise<Array<Object>>}
+ */
+export async function getAllUsers() {
+    return await databases.listDocuments(
+        DATABASE_ID,
+        USER_COLLECTION_ID
     );
 }

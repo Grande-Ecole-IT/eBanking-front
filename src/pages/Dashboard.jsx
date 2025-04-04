@@ -13,7 +13,6 @@ import Background from "../layout/Background";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
-  const provider = useAuth();
 
   const transactions = [
     {
