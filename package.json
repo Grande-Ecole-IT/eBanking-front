@@ -13,6 +13,7 @@
     "@react-three/drei": "^10.0.5",
     "@react-three/fiber": "^9.1.1",
     "@tailwindcss/vite": "^4.0.15",
+    "appwrite": "^17.0.1",
     "framer-motion": "^12.6.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
