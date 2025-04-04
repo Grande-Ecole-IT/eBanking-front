@@ -37,20 +37,17 @@ export async function uploadProfilePicture(imageFile, userId) {
 /**
  * Récupère l'URL de l'image de profil
  * @param {string} fileId - ID du fichier
- * @param {number} [width=200] - Largeur de l'image
- * @param {number} [height=200] - Hauteur de l'image
  * @returns {string} URL de l'image
  */
-export function getProfilePicture(fileId, width = 200, height = 200) {
+export function getProfilePicture(fileId) {
     return storage.getFilePreview(
         STORAGE_BUCKET_ID,
-        fileId,
-        width,
-        height,
-        undefined,
-        undefined,
-        'top'
+        fileId
     );
+}
+
+export function getProfileView(fileId){
+    return storage.getFileView(STORAGE_BUCKET_ID,fileId);
 }
 
 /**

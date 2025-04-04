@@ -1,5 +1,7 @@
 import { account, ID } from '../lib/appwrite';
-import { getProfilePicture, uploadProfilePicture } from './buckets/picturesService';
+
+import {  getProfileView, uploadProfilePicture } from './buckets/picturesService';
+
 import { createUserDocument, getUserDocument } from './databases/users';
 
 /**
@@ -23,7 +25,8 @@ export async function createUser(email, password, name , profileImage = null) {
         const userData = {
             name,
             email,
-            picture: getProfilePicture(profileImageId),
+            picture: getProfileView(profileImageId),
+
         };
         
         await createUserDocument(authAccount.$id, userData);
