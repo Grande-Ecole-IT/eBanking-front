@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router";
-import AuthLayout from "../layout/AuthLayout";
+import { Link, useNavigate } from "react-router";
 import Button from "../components/Button";
+import Loader from "../components/Loader";
+import { useAuth } from "../hooks/useAuth";
+import AuthLayout from "../layout/AuthLayout";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -9,10 +11,22 @@ function Login() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Données de connexion:", formData);
+    setLoading(true);
+
+    try {
+      await login(formData.email, formData.password);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -134,7 +148,7 @@ function Login() {
           </button>
         </div>
         <Button variant="primary" size="md">
-          Se connecter
+          {loading ? <Loader /> : "Se connecter"}
         </Button>
       </form>
 

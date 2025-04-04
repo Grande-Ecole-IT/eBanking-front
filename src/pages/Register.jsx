@@ -1,6 +1,9 @@
-import { useState, useRef } from "react";
-import AuthLayout from "../layout/AuthLayout";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import Button from "../components/Button";
+import Loader from "../components/Loader";
+import { useAuth } from "../hooks/useAuth";
+import AuthLayout from "../layout/AuthLayout";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,10 +20,27 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const fileInputRef = useRef(null);
+  const { signup } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Registration data:", formData);
+    setLoading(true);
+
+    try {
+      await signup(
+        formData.email,
+        formData.password,
+        formData.name,
+        formData.identityPhoto
+      );
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleImageChange = (e) => {
@@ -322,7 +342,7 @@ function Register() {
 
           <div className="md:col-span-2 pt-2">
             <Button variant="primary" size="md">
-              Ouvrir mon compte
+              {loading ? <Loader /> : "Ouvrir mon compte"}
             </Button>
           </div>
         </form>
