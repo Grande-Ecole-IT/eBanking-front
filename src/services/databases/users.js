@@ -1,4 +1,4 @@
-import { DATABASE_ID, databases } from "../../lib/appwrite";
+import { DATABASE_ID, databases, Query } from "../../lib/appwrite";
 
 const USER_COLLECTION_ID = "users";
 
@@ -36,15 +36,15 @@ export async function getUserDocument(userId) {
  * @param {string} email - Email à rechercher
  * @returns {Promise<Array<Object>>}
  */
-export async function searchUsers(name, email) {
+export async function searchUsers({name, email}) {
     const queries = [];
     
     if (name) {
-        queries.push(['name', '=', name]);
+        queries.push(Query.equal('name', name));
     }
     
     if (email) {
-        queries.push(['email', '=', email]);
+        queries.push(Query.equal('email', email));
     }
 
     return await databases.listDocuments(

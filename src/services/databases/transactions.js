@@ -1,4 +1,4 @@
-import { DATABASE_ID, databases, ID } from "../../lib/appwrite";
+import { DATABASE_ID, databases, ID, Query } from "../../lib/appwrite";
 
 const TRANSACTIONS_COLLECTION_ID = "transactions";
 
@@ -35,6 +35,8 @@ export async function getTransactionsBySender(senderId) {
     return await databases.listDocuments(
         DATABASE_ID,
         TRANSACTIONS_COLLECTION_ID,
-        [['sender', '=', senderId]]
+        [
+            Query.equal('sender', senderId)
+        ]
     );
 }

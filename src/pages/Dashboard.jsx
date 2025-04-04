@@ -10,10 +10,11 @@ import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
+import { searchUsers } from "../services/databases/users";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
-
+  const provider = useAuth();
   const transactions = [
     {
       name: "Salaire Acme Inc",
