@@ -15,24 +15,49 @@ const Background = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden opacity-30">
+    <div className="fixed inset-0 z-0 overflow-hidden opacity-40">
+      {/* Circuit Board with Glow Effect */}
       <svg
         className="absolute inset-0 w-full h-full"
         xmlns="http://www.w3.org/2000/svg"
       >
+        <defs>
+          <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
         <motion.path
           d="M0,100 C150,200 350,0 500,100 C650,200 850,0 1000,100"
-          stroke="rgba(99, 179, 237, 0.15)"
+          stroke="rgba(56, 182, 255, 0.3)"
           strokeWidth="2"
+          filter="url(#glow)"
           fill="none"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
         />
         <motion.path
           d="M0,300 C150,400 350,200 500,300 C650,400 850,200 1000,300"
-          stroke="rgba(99, 179, 237, 0.15)"
+          stroke="rgba(56, 182, 255, 0.3)"
           strokeWidth="2"
+          filter="url(#glow)"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 2,
+          }}
+        />
+        <motion.path
+          d="M0,500 C150,600 350,400 500,500 C650,600 850,400 1000,500"
+          stroke="rgba(56, 182, 255, 0.3)"
+          strokeWidth="2"
+          filter="url(#glow)"
           fill="none"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
@@ -40,50 +65,10 @@ const Background = () => {
             duration: 25,
             repeat: Infinity,
             ease: "linear",
-            delay: 3,
+            delay: 4,
           }}
         />
       </svg>
-
-      {[...Array(isMobile ? 8 : 15)].map((_, i) => (
-        <motion.div
-          key={i}
-          initial={{ x: Math.random() * 100, y: Math.random() * 100 }}
-          animate={{
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            transition: {
-              duration: Math.random() * 15 + 15,
-              repeat: Infinity,
-              repeatType: "reverse",
-            },
-          }}
-          className="absolute rounded-full bg-blue-200/30 border border-blue-300/30"
-          style={{
-            width: `${Math.random() * (isMobile ? 10 : 20) + 10}px`,
-            height: `${Math.random() * (isMobile ? 10 : 20) + 10}px`,
-          }}
-        />
-      ))}
-
-      {!isMobile &&
-        [...Array(20)].map((_, i) => (
-          <motion.div
-            key={`binary-${i}`}
-            className="absolute text-xs font-mono text-blue-300/50"
-            style={{ left: `${Math.random() * 100}%` }}
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: "100vh", opacity: [0, 0.8, 0] }}
-            transition={{
-              duration: Math.random() * 10 + 5,
-              repeat: Infinity,
-              ease: "linear",
-              delay: Math.random() * 5,
-            }}
-          >
-            {Math.random() > 0.5 ? "1" : "0"}
-          </motion.div>
-        ))}
     </div>
   );
 };

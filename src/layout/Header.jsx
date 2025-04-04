@@ -16,7 +16,7 @@ const Header = () => (
         transition={{ delay: 0.3 }}
         className="text-xl md:text-2xl font-bold text-blue-800"
       >
-        NeoBank
+        FlashPay
       </motion.div>
     </div>
     <motion.div
