@@ -10,12 +10,15 @@ import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
+import { searchUsers } from "../services/databases/users";
+import HistoricalList from "../components/HistoricalList";
+
 import { getTransactionsByUser } from "../services/databases/transactions";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
-  const provider = useAuth();
   const [transactions, setTransactions] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     try {
@@ -27,6 +30,76 @@ const Dashboard = () => {
       console.log(error);
     }
   }, [provider?.user?.$id]);
+  
+  const historicals = [
+    {
+      id: 1,
+      date: "Aujourd'hui, 09:42",
+      device: "iPhone 13 Pro",
+      location: "Paris, France",
+      status: "success",
+      ipAddress: "192.168.1.45",
+    },
+    {
+      id: 2,
+      date: "Hier, 22:15",
+      device: "MacBook Pro (M1)",
+      location: "Lyon, France",
+      status: "success",
+      ipAddress: "85.203.45.12",
+    },
+    {
+      id: 3,
+      date: "05/06/2023, 14:30",
+      device: "Samsung Galaxy S21",
+      location: "Marseille, France",
+      status: "failed",
+      ipAddress: "176.129.78.34",
+      reason: "Mot de passe incorrect",
+    },
+    {
+      id: 4,
+      date: "04/06/2023, 08:12",
+      device: "iPad Air",
+      location: "Bordeaux, France",
+      status: "success",
+      ipAddress: "91.167.23.156",
+    },
+    {
+      id: 5,
+      date: "02/06/2023, 19:45",
+      device: "Windows PC (Chrome)",
+      location: "Toulouse, France",
+      status: "success",
+      ipAddress: "78.245.12.89",
+    },
+    {
+      id: 6,
+      date: "01/06/2023, 11:20",
+      device: "Android (Xiaomi Redmi Note 10)",
+      location: "Lille, France",
+      status: "failed",
+      ipAddress: "154.76.34.98",
+      reason: "Tentative de mot de passe expiré",
+    },
+    {
+      id: 7,
+      date: "30/05/2023, 16:33",
+      device: "iPhone 12",
+      location: "Nice, France",
+      status: "success",
+      ipAddress: "92.154.76.211",
+    },
+    {
+      id: 8,
+      date: "28/05/2023, 09:15",
+      device: "MacBook Air (M2)",
+      location: "Nantes, France",
+      status: "success",
+      ipAddress: "85.203.45.12",
+    },
+  ];
+
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -68,7 +141,7 @@ const Dashboard = () => {
             </div>
 
             <div className="space-y-6">
-              <UserInfoCard />
+              <UserInfoCard user={user}/>
               <MoneyTransferCard />
 
               <motion.div
@@ -109,6 +182,7 @@ const Dashboard = () => {
               </motion.div>
             </div>
           </div>
+          <HistoricalList historicals={historicals} />
         </div>
       </div>
     </div>

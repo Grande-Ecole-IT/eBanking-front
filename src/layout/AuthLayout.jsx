@@ -35,7 +35,7 @@ function AuthLayout({ children, title, subtitle, features }) {
       <div
         className="hidden lg:flex lg:w-1/2 flex-col justify-center p-12 text-white relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #3b82f6 1%, #2563eb 1%)",
+          background: "linear-gradient(135deg, #3b82f6 80%, #2563eb 100%)",
         }}
       >
         <div className="absolute w-full h-full overflow-hidden z-0">

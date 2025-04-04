@@ -1,17 +1,130 @@
 /* eslint-disable no-unused-vars */
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { FiMessageSquare, FiSend, FiX, FiZap } from "react-icons/fi";
+import { FiMessageSquare, FiSend, FiX, FiZap, FiMic } from "react-icons/fi";
 
 const ChatBot = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
+  const [recentMess, setRecentMess] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  const doTransaction = async (transactionData) => {
+    console.log(transactionData);
+    try {
+      const response = await fetch(
+        "https://ebanking-back.onrender.com/transaction-analyzer/",
+        {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(transactionData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Transaction réussie:", result);
+      if (result.type == "SEND") {
+        setMessages([
+          ...messages,
+          {
+            text: `Ok je vais envoyé ${result.amount} ${result.currency} à ${result.receiver}`,
+            sender: "bot",
+          },
+        ]);
+      } else if (result.type == "DEMAND") {
+        setMessages([
+          ...messages,
+          {
+            text: `Ok je vais envoyé une demande à ${result.sender} une valeur de ${result.amount} ${result.currency} `,
+            sender: "bot",
+          },
+        ]);
+      }
+      return result;
+    } catch (error) {
+      console.error("Erreur lors de la transaction:", error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (recentMess) {
+      const transactionData = {
+        username: recentMess.sender,
+        content: recentMess.text,
+      };
+      const result = doTransaction(transactionData);
+    }
+  }, [recentMess]);
+
+  // Initialisation de la reconnaissance vocale
+  useEffect(() => {
+    if ("webkitSpeechRecognition" in window) {
+      const SpeechRecognition = window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = "fr-FR";
+
+      recognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInputValue((prev) => prev + transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = (event) => {
+        console.error("Erreur de reconnaissance vocale:", event.error);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        if (isListening) {
+          recognitionRef.current.start();
+        }
+      };
+    } else {
+      console.warn(
+        "L'API de reconnaissance vocale n'est pas supportée par ce navigateur"
+      );
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, [isListening]);
+
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (error) {
+        console.error(
+          "Erreur lors du démarrage de la reconnaissance vocale:",
+          error
+        );
+      }
+    }
+  };
 
   const handleSend = () => {
     if (inputValue.trim() === "") return;
-
     setMessages([...messages, { text: inputValue, sender: "user" }]);
+    setRecentMess({ text: inputValue, sender: "@Jason" });
     setInputValue("");
   };
 
@@ -86,31 +199,44 @@ const ChatBot = ({ isOpen, onClose }) => {
                     Posez-moi vos questions sur vos transactions, comptes ou
                     services bancaires
                   </p>
+                  <button
+                    onClick={toggleListening}
+                    className={`mt-4 p-3 rounded-full ${
+                      isListening ? "bg-red-500 animate-pulse" : "bg-blue-500"
+                    } text-white shadow-md`}
+                  >
+                    <FiMic className="text-xl" />
+                  </button>
+                  {isListening && (
+                    <p className="text-blue-500 text-xs mt-2">En écoute...</p>
+                  )}
                 </motion.div>
               ) : (
-                messages.map((message, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={`mb-3 flex ${
-                      message.sender === "user"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-xs p-4 rounded-2xl ${
+                <>
+                  {messages.map((message, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className={`mb-3 flex ${
                         message.sender === "user"
-                          ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-br-none shadow-blue-200/50 shadow-md"
-                          : "bg-white border border-blue-100 rounded-bl-none shadow-sm"
+                          ? "justify-end"
+                          : "justify-start"
                       }`}
                     >
-                      {message.text}
-                    </div>
-                  </motion.div>
-                ))
+                      <div
+                        className={`max-w-xs p-4 rounded-2xl ${
+                          message.sender === "user"
+                            ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-br-none shadow-blue-200/50 shadow-md"
+                            : "bg-white border border-blue-100 rounded-bl-none shadow-sm"
+                        }`}
+                      >
+                        {message.text}
+                      </div>
+                    </motion.div>
+                  ))}
+                </>
               )}
               <div ref={messagesEndRef} />
             </div>
@@ -121,12 +247,22 @@ const ChatBot = ({ isOpen, onClose }) => {
                 layout
                 className="flex items-center space-x-2 bg-white/90 backdrop-blur-xs rounded-xl px-3 py-2 border border-blue-100 shadow-inner"
               >
+                <button
+                  onClick={toggleListening}
+                  className={`p-2 rounded-lg ${
+                    isListening
+                      ? "bg-red-500 text-white"
+                      : "bg-blue-100 text-blue-600 hover:bg-blue-200"
+                  } transition-all`}
+                >
+                  <FiMic className="text-lg" />
+                </button>
                 <input
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  placeholder="Écrivez votre message..."
+                  placeholder="Écrivez ou dictez votre message..."
                   className="flex-1 p-2 bg-transparent focus:outline-none text-blue-900 placeholder-blue-300"
                 />
                 <motion.button
@@ -144,7 +280,8 @@ const ChatBot = ({ isOpen, onClose }) => {
                 </motion.button>
               </motion.div>
               <p className="text-xs text-blue-400 mt-2 text-center">
-                Appuyez sur Entrée pour envoyer
+                Appuyez sur Entrée pour envoyer ou cliquez sur le micro pour
+                parler
               </p>
             </div>
           </motion.div>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import {
   createUser,
@@ -26,31 +26,31 @@ const AuthContextProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const signup = useCallback(async (email, password, name, profileImage = null) => {
+  const signup = async (email, password, name, profileImage = null) => {
     try {
       await createUser(email, password, name, profileImage);
     } catch (err) {
       throw new Error(err.message);
     }
-  }, []);
+  };
 
-  const login = useCallback(async (email, password) => {
+  const login = async (email, password) => {
     try {
       const currentUser = await loginWithEmail(email, password);
       setUser(currentUser);
     } catch (err) {
       throw new Error(err.message);
     }
-  },[]);
+  };
 
-  const logoutUser = useCallback(async () => {
+  const logoutUser = async () => {
     try {
       await logout();
       setUser(null);
     } catch (err) {
       throw new Error(err.message);
     }
-  },[]);
+  };
 
   const value = {
     user,

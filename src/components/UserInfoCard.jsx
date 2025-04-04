@@ -4,16 +4,15 @@ import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 
-const UserInfoCard = () => {
-  const provider = useAuth();
-  const user = provider?.user;
+const UserInfoCard = ({ user }) => {
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async (e) => {
     e.preventDefault();
 
     try {
-      await provider?.logout();
+      await logout();
       navigate("/login");
     } catch (error) {
       console.error("Login error:", error);

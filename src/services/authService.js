@@ -1,5 +1,7 @@
 import { account, ID } from '../lib/appwrite';
-import { getProfileView, uploadProfilePicture } from './buckets/picturesService';
+
+import {  getProfileView, uploadProfilePicture } from './buckets/picturesService';
+
 import { createUserDocument, getUserDocument } from './databases/users';
 
 /**
