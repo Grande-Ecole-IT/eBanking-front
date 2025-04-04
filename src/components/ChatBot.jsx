@@ -12,15 +12,15 @@ const ChatBot = ({ isOpen, onClose }) => {
   const recognitionRef = useRef(null);
 
   const doTransaction = async (transactionData) => {
-    console.log(transactionData)
+    console.log(transactionData);
     try {
       const response = await fetch(
         "https://ebanking-back.onrender.com/transaction-analyzer/",
         {
           method: "POST",
           headers: {
-            'accept': "application/json",
-            'content-type': "application/json"
+            accept: "application/json",
+            "content-type": "application/json",
           },
           body: JSON.stringify(transactionData),
         }
@@ -32,6 +32,23 @@ const ChatBot = ({ isOpen, onClose }) => {
 
       const result = await response.json();
       console.log("Transaction réussie:", result);
+      if (result.type == "SEND") {
+        setMessages([
+          ...messages,
+          {
+            text: `Ok je vais envoyé ${result.amount} ${result.currency} à ${result.receiver}`,
+            sender: "bot",
+          },
+        ]);
+      } else if (result.type == "DEMAND") {
+        setMessages([
+          ...messages,
+          {
+            text: `Ok je vais envoyé une demande à ${result.sender} une valeur de ${result.amount} ${result.currency} `,
+            sender: "bot",
+          },
+        ]);
+      }
       return result;
     } catch (error) {
       console.error("Erreur lors de la transaction:", error);
@@ -46,7 +63,6 @@ const ChatBot = ({ isOpen, onClose }) => {
         content: recentMess.text,
       };
       const result = doTransaction(transactionData);
-      console.log(result);
     }
   }, [recentMess]);
 
@@ -107,7 +123,7 @@ const ChatBot = ({ isOpen, onClose }) => {
 
   const handleSend = () => {
     if (inputValue.trim() === "") return;
-    setMessages([...messages, { text: inputValue, sender: "@Jason" }]);
+    setMessages([...messages, { text: inputValue, sender: "user" }]);
     setRecentMess({ text: inputValue, sender: "@Jason" });
     setInputValue("");
   };
