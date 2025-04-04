@@ -11,11 +11,10 @@ import UserInfoCard from "../components/UserInfoCard";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
 import { searchUsers } from "../services/databases/users";
+import HistoricalList from "../components/HistoricalList";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
-  const provider = useAuth();
-
   const historicals = [
     {
       id: 1,
@@ -153,7 +152,7 @@ const Dashboard = () => {
             </div>
 
             <div className="space-y-6">
-              <UserInfoCard />
+              <UserInfoCard user={user}/>
               <MoneyTransferCard />
 
               <motion.div
