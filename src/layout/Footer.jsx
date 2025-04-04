@@ -10,7 +10,7 @@ const Footer = () => (
       transition={{ duration: 0.5 }}
       viewport={{ once: true }}
     >
-      <div className="text-xl font-bold text-blue-800">NeoBank</div>
+      <div className="text-xl font-bold text-blue-800">FlashPay</div>
     </motion.div>
     <motion.div
       className="flex flex-wrap justify-center gap-4 md:gap-6"

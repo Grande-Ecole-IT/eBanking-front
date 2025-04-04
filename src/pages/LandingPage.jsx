@@ -6,7 +6,7 @@ import Header from "../layout/Header";
 import Hero from "../layout/Hero";
 import Stats from "../layout/Stats";
 
-const HomePage = () => {
+const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 text-gray-900 overflow-hidden">
       <Background />
@@ -22,4 +22,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default LandingPage;

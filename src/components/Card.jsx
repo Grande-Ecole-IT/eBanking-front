@@ -35,7 +35,7 @@ const Card = () => (
     </div>
     <div className="mt-3 md:mt-4 text-left">
       <div className="text-xs md:text-sm text-blue-500 font-medium">
-        Carte NeoBank
+        Carte FlashPay
       </div>
       <div className="text-lg md:text-xl font-semibold mt-1 text-blue-800">
         Votre porte-monnaie numérique sécurisé
