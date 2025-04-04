@@ -57,7 +57,7 @@ const Hero = () => {
         </motion.p>
 
         <motion.div
-          className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 px-4"
+          className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 px-4 items-center max-w-xs mx-auto"
           variants={itemVariants}
         >
           <Button variant="primary" size="lg" icon="eye">
