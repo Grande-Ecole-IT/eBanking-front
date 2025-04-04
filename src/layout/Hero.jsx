@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
 import AnimatedText from "../components/AnimatedText";
-import Button from "../components/Button";
 import FloatingCard from "../components/FloatingCard";
 
 const Hero = () => {
@@ -43,11 +42,9 @@ const Hero = () => {
             Nouvelle génération bancaire
           </motion.span>
         </motion.div>
-
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight">
           <AnimatedText text="La banque intelligente pour votre quotidien" />
         </h1>
-
         <motion.p
           className="text-lg sm:text-xl text-gray-700 mb-6 md:mb-8 max-w-2xl mx-auto px-4"
           variants={itemVariants}
@@ -55,15 +52,6 @@ const Hero = () => {
           Une expérience financière simplifiée, sécurisée et conçue pour vous
           faire gagner du temps.
         </motion.p>
-
-        <motion.div
-          className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 px-4 items-center max-w-xs mx-auto"
-          variants={itemVariants}
-        >
-          <Button variant="primary" size="lg" icon="eye">
-            Voir la démo
-          </Button>
-        </motion.div>
       </motion.div>
 
       <motion.div

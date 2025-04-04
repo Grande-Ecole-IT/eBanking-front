@@ -1,11 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import logo from "../assets/Logo.png";
 import BalanceCard from "../components/BalanceCard";
+import Button from "../components/Button";
+import ChatBot from "../components/ChatBot";
 import MoneyTransferCard from "../components/MoneyTransferCard";
 import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
 
 const Dashboard = () => {
+  const [chatbotOpen, setChatbotOpen] = useState(false);
   const user = {
     name: "Alex Dupont",
     email: "alex.dupont@example.com",
@@ -41,18 +46,35 @@ const Dashboard = () => {
     },
   ];
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === "k") {
+        e.preventDefault();
+        setChatbotOpen((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
-    <div className="h-screen bg-blue-50 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-blue-50 px-4 sm:px-6 lg:px-8 pb-10">
+      <ChatBot isOpen={chatbotOpen} onClose={() => setChatbotOpen(false)} />
+
       <div className="max-w-7xl mx-auto">
         <motion.header
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="flex justify-between items-center mb-8"
+          className="flex justify-between items-center mb-2"
         >
-          <h1 className="text-2xl sm:text-3xl font-bold text-blue-900">
-            Tableau de bord
-          </h1>
-          <div className="text-blue-500 text-sm">Mis à jour à l'instant</div>
+          <img src={logo} alt="FlashPay" className="w-30 h-auto" />
+
+          <div className="flex items-center space-x-4">
+            <Button onClick={() => setChatbotOpen(true)} variant="primary">
+              <span>Assistant (Ctrl+K)</span>
+            </Button>
+          </div>
         </motion.header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

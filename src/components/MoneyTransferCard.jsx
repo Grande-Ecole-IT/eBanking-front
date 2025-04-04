@@ -8,7 +8,7 @@ const MoneyTransferCard = () => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.4 }}
-    className="bg-blue-500 rounded-xl p-6 text-white"
+    className="bg-blue-950 rounded-xl p-6 text-white"
   >
     <h3 className="text-lg font-semibold mb-4">Envoyer de l'argent</h3>
     <button className="w-full flex items-center justify-between p-4 bg-zinc-300/20 rounded-lg backdrop-blur-sm group">

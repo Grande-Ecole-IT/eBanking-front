@@ -6,7 +6,7 @@ const TransactionItem = ({ transaction }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
-    className="flex justify-between items-center py-3 border-b border-blue-50 last:border-0"
+    className="flex justify-between items-center py-3 border-b border-blue-50 last:border-0 hover:bg-slate-50"
   >
     <div className="flex items-center">
       <div
