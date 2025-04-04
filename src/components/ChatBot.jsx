@@ -5,28 +5,68 @@ import { FiMessageSquare, FiSend, FiX, FiZap, FiMic } from "react-icons/fi";
 
 const ChatBot = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
+  const [recentMess, setRecentMess] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
 
+  const doTransaction = async (transactionData) => {
+    console.log(transactionData)
+    try {
+      const response = await fetch(
+        "https://ebanking-back.onrender.com/transaction-analyzer/",
+        {
+          method: "POST",
+          headers: {
+            'accept': "application/json",
+            'content-type': "application/json"
+          },
+          body: JSON.stringify(transactionData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Transaction réussie:", result);
+      return result;
+    } catch (error) {
+      console.error("Erreur lors de la transaction:", error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (recentMess) {
+      const transactionData = {
+        username: recentMess.sender,
+        content: recentMess.text,
+      };
+      const result = doTransaction(transactionData);
+      console.log(result);
+    }
+  }, [recentMess]);
+
   // Initialisation de la reconnaissance vocale
   useEffect(() => {
-    if ('webkitSpeechRecognition' in window) {
+    if ("webkitSpeechRecognition" in window) {
       const SpeechRecognition = window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'fr-FR'; // Définir la langue (français)
+      recognitionRef.current.lang = "fr-FR";
 
       recognitionRef.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
-        setInputValue(prev => prev + transcript);
+        setInputValue((prev) => prev + transcript);
         setIsListening(false);
       };
 
       recognitionRef.current.onerror = (event) => {
-        console.error('Erreur de reconnaissance vocale:', event.error);
+        console.error("Erreur de reconnaissance vocale:", event.error);
         setIsListening(false);
       };
 
@@ -36,7 +76,9 @@ const ChatBot = ({ isOpen, onClose }) => {
         }
       };
     } else {
-      console.warn("L'API de reconnaissance vocale n'est pas supportée par ce navigateur");
+      console.warn(
+        "L'API de reconnaissance vocale n'est pas supportée par ce navigateur"
+      );
     }
 
     return () => {
@@ -55,15 +97,18 @@ const ChatBot = ({ isOpen, onClose }) => {
         recognitionRef.current.start();
         setIsListening(true);
       } catch (error) {
-        console.error("Erreur lors du démarrage de la reconnaissance vocale:", error);
+        console.error(
+          "Erreur lors du démarrage de la reconnaissance vocale:",
+          error
+        );
       }
     }
   };
 
   const handleSend = () => {
     if (inputValue.trim() === "") return;
-
-    setMessages([...messages, { text: inputValue, sender: "user" }]);
+    setMessages([...messages, { text: inputValue, sender: "@Jason" }]);
+    setRecentMess({ text: inputValue, sender: "@Jason" });
     setInputValue("");
   };
 
@@ -141,9 +186,7 @@ const ChatBot = ({ isOpen, onClose }) => {
                   <button
                     onClick={toggleListening}
                     className={`mt-4 p-3 rounded-full ${
-                      isListening 
-                        ? "bg-red-500 animate-pulse" 
-                        : "bg-blue-500"
+                      isListening ? "bg-red-500 animate-pulse" : "bg-blue-500"
                     } text-white shadow-md`}
                   >
                     <FiMic className="text-xl" />
@@ -221,7 +264,8 @@ const ChatBot = ({ isOpen, onClose }) => {
                 </motion.button>
               </motion.div>
               <p className="text-xs text-blue-400 mt-2 text-center">
-                Appuyez sur Entrée pour envoyer ou cliquez sur le micro pour parler
+                Appuyez sur Entrée pour envoyer ou cliquez sur le micro pour
+                parler
               </p>
             </div>
           </motion.div>
