@@ -1,25 +1,17 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
-import Button from "../components/Button";
 import { NavLink } from "react-router";
+import logo from "../assets/Logo.png";
+import Button from "../components/Button";
 
 const Header = () => (
   <motion.header
     initial={{ y: -50, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
     transition={{ duration: 0.8 }}
-    className="flex justify-between items-center mb-12 md:mb-16 lg:mb-24"
+    className="flex justify-between items-center mb-8 md:mb-10 lg:mb-14"
   >
-    <div className="flex items-center">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="text-xl md:text-2xl font-bold text-blue-800"
-      >
-        FlashPay
-      </motion.div>
-    </div>
+    <img src={logo} alt="FlashPay" className="w-30 h-auto" />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

@@ -1,74 +1,142 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 
 const Background = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden opacity-40">
-      {/* Circuit Board with Glow Effect */}
-      <svg
+    <div className="fixed inset-0 z-0 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100">
+      {/* Réseau de connexions animé (style circuit imprimé) */}
+      <motion.svg
         className="absolute inset-0 w-full h-full"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <defs>
-          <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-
         <motion.path
-          d="M0,100 C150,200 350,0 500,100 C650,200 850,0 1000,100"
-          stroke="rgba(56, 182, 255, 0.3)"
-          strokeWidth="2"
-          filter="url(#glow)"
+          d="M0,50 Q100,100 200,50 T400,50 T600,30 T800,70 T1000,50"
+          stroke="#88C9FF"
+          strokeWidth="1.5"
           fill="none"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 0.3 }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
         />
         <motion.path
-          d="M0,300 C150,400 350,200 500,300 C650,400 850,200 1000,300"
-          stroke="rgba(56, 182, 255, 0.3)"
-          strokeWidth="2"
-          filter="url(#glow)"
+          d="M0,70 Q150,20 300,70 T500,90 T700,30 T1000,60"
+          stroke="#A0D9FF"
+          strokeWidth="1.5"
           fill="none"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 0.3 }}
           transition={{
             duration: 20,
+            delay: 5,
             repeat: Infinity,
-            ease: "linear",
-            delay: 2,
+            repeatType: "reverse",
+            ease: "easeInOut",
           }}
         />
-        <motion.path
-          d="M0,500 C150,600 350,400 500,500 C650,600 850,400 1000,500"
-          stroke="rgba(56, 182, 255, 0.3)"
-          strokeWidth="2"
-          filter="url(#glow)"
-          fill="none"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
+      </motion.svg>
+
+      {/* Grille technologique animée */}
+      <motion.div
+        className="absolute inset-0 bg-grid-blue-200"
+        style={{
+          backgroundImage: `linear-gradient(to right, #B5D7FF 1px, transparent 1px), linear-gradient(to bottom, #B5D7FF 1px, transparent 1px)`,
+          backgroundSize: "80px 80px",
+        }}
+        animate={{
+          backgroundPosition: ["0% 0%", "90% 90%"],
+        }}
+        transition={{
+          duration: 700,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
+
+      {/* Hologramme central (data sphere) */}
+      <motion.div
+        className="absolute inset-0 flex justify-center items-center"
+        animate={{
+          scale: [1, 1.05, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        style={{
+          top: "50%",
+          left: "50%",
+          width: "300px",
+          height: "300px",
+          transform: "translate(-50%, -50%)",
+          background:
+            "radial-gradient(circle, rgba(160,217,255,0.2) 0%, rgba(136,201,255,0) 70%)",
+          borderRadius: "50%",
+          boxShadow: "0 0 40px rgba(160, 217, 255, 0.3)",
+        }}
+      >
+        {/* Points de données animés */}
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            style={{
+              position: "absolute",
+              width: "6px",
+              height: "6px",
+              backgroundColor: "#88C9FF",
+              borderRadius: "50%",
+              top: `${50 + 40 * Math.sin((i * 30 * Math.PI) / 180)}%`,
+              left: `${50 + 40 * Math.cos((i * 30 * Math.PI) / 180)}%`,
+            }}
+            animate={{
+              y: [0, -15, 0],
+              opacity: [0.6, 1, 0.6],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{
+              duration: 10 + Math.random() * 5,
+              repeat: Infinity,
+              delay: i * 0.5,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </motion.div>
+
+      {/* Barres de données animées (style dashboard) */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute bg-blue-200"
+          style={{
+            bottom: 0,
+            left: `${10 + i * 12}%`,
+            width: "60px",
+            height: "20%",
+            opacity: 0.4,
+          }}
+          animate={{
+            height: [
+              `${20 + Math.random() * 30}%`,
+              `${40 + Math.random() * 50}%`,
+              `${20 + Math.random() * 30}%`,
+            ],
+          }}
           transition={{
-            duration: 25,
+            duration: 8 + Math.random() * 4,
             repeat: Infinity,
-            ease: "linear",
-            delay: 4,
+            repeatType: "reverse",
+            delay: i * 0.8,
+            ease: "easeInOut",
           }}
         />
-      </svg>
+      ))}
     </div>
   );
 };

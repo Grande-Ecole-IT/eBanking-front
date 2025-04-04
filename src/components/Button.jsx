@@ -8,7 +8,13 @@ const iconMap = {
   arrow: FiArrowRight,
 };
 
-const Button = ({ variant = "primary", size = "md", icon, children }) => {
+const Button = ({
+  variant = "primary",
+  size = "md",
+  icon,
+  children,
+  onClick = () => {},
+}) => {
   const baseClasses =
     "rounded-lg flex items-center w-full justify-center transition-all";
   const sizeClasses = {
@@ -30,6 +36,7 @@ const Button = ({ variant = "primary", size = "md", icon, children }) => {
       whileHover={{ scale: variant === "primary" ? 1.05 : 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]}`}
+      onClick={onClick}
     >
       {Icon && <Icon className="mr-2" />}
       {children}
