@@ -27,16 +27,19 @@ export async function createTransaction(senderId, receiverId, motif, montant, ty
 }
 
 /**
- * Récupère les transactions d'un expéditeur particulier
- * @param {string} senderId - ID de l'expéditeur
+ * Récupère les transactions liées à un utilisateur (en tant qu'expéditeur ou destinataire)
+ * @param {string} userId - ID de l'utilisateur
  * @returns {Promise<Array<Object>>}
  */
-export async function getTransactionsBySender(senderId) {
+export async function getTransactionsByUser(userId) {
     return await databases.listDocuments(
         DATABASE_ID,
         TRANSACTIONS_COLLECTION_ID,
         [
-            Query.equal('sender', senderId)
+            Query.or([
+                Query.equal('senderId', userId),
+                Query.equal('receiverId', userId)
+            ])
         ]
     );
 }
