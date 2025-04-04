@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
 
-const Card = () => (
+const FloatingCard = () => (
   <motion.div
     animate={{ y: [0, -15, 0], rotate: [0, 2, 0] }}
     transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
@@ -13,7 +13,7 @@ const Card = () => (
         <div className="w-56 md:w-64 h-32 md:h-40 bg-blue-500 rounded-lg shadow-md flex flex-col justify-between p-3 md:p-4">
           <div className="flex justify-between items-start">
             <div className="text-white font-medium text-sm md:text-base">
-              NeoBank
+              FlashPay
             </div>
             <div className="text-white text-xs">VISA</div>
           </div>
@@ -44,4 +44,4 @@ const Card = () => (
   </motion.div>
 );
 
-export default Card;
+export default FloatingCard;
