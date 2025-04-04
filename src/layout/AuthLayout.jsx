@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router' 
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router";
 
 function AuthLayout({ children, title, subtitle, features }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex">
@@ -10,18 +10,18 @@ function AuthLayout({ children, title, subtitle, features }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        onClick={() => navigate('/')}
+        onClick={() => navigate("/")}
         className="absolute top-6 left-6 z-50 flex items-center gap-2 text-white/80 hover:text-white transition-colors group"
       >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="24" 
-          height="24" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
           strokeLinejoin="round"
           className="group-hover:-translate-x-1 transition-transform"
         >
@@ -31,8 +31,12 @@ function AuthLayout({ children, title, subtitle, features }) {
         <span className="hidden sm:inline">Retour à l'accueil</span>
       </motion.button>
 
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-12 text-white relative overflow-hidden"
-           style={{ background: 'linear-gradient(135deg, #4338ca 0%, #3730a3 100%)' }}>
+      <div
+        className="hidden lg:flex lg:w-1/2 flex-col justify-center p-12 text-white relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #3b82f6 1%, #2563eb 1%)",
+        }}
+      >
         <div className="absolute w-full h-full overflow-hidden z-0">
           <div className="absolute w-64 h-64 bg-white/10 rounded-full -bottom-32 -left-32"></div>
           <div className="absolute w-48 h-48 bg-white/10 rounded-full top-1/2 -right-24"></div>
@@ -60,7 +64,7 @@ function AuthLayout({ children, title, subtitle, features }) {
           </div>
         </motion.div>
       </div>
-      
+
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-gray-50">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -72,7 +76,7 @@ function AuthLayout({ children, title, subtitle, features }) {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
 
-export default AuthLayout
+export default AuthLayout;

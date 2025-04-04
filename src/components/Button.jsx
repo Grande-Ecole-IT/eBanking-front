@@ -10,7 +10,7 @@ const iconMap = {
 
 const Button = ({ variant = "primary", size = "md", icon, children }) => {
   const baseClasses =
-    "rounded-lg flex items-center justify-center transition-all";
+    "rounded-lg flex items-center w-full justify-center transition-all";
   const sizeClasses = {
     sm: "px-4 py-1 text-sm",
     md: "px-6 py-2 text-base",
