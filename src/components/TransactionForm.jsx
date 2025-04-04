@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FiDollarSign,
   FiMessageSquare,
@@ -10,6 +10,7 @@ import {
 } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 import { createTransaction } from "../services/databases/transactions";
+import { searchUsers } from "../services/databases/users";
 
 const TransactionForm = ({ onClose }) => {
   const [recipient, setRecipient] = useState("");
@@ -20,6 +21,7 @@ const TransactionForm = ({ onClose }) => {
   const provider = useAuth();
   const user = provider?.user;
   const type = "envoi";
+  const [users, setUsers] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,6 +43,13 @@ const TransactionForm = ({ onClose }) => {
     //   }, 2000);
     // }, 1500);
   };
+
+  useEffect(() => {
+    searchUsers("rasendraminosarobidy@gmail.com").then((res) => {
+      console.log("heyyy");
+      console.log(res);
+    });
+  }, []);
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden">
