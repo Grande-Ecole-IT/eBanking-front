@@ -11,7 +11,7 @@ function Login() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
+  const provider = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate("");
 
@@ -20,7 +20,8 @@ function Login() {
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password);
+      await provider?.login(formData.email, formData.password);
+      console.log(provider?.user);
       navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error);

@@ -13,7 +13,7 @@ import Background from "../layout/Background";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
-  const { user } = useAuth();
+  const provider = useAuth();
 
   const transactions = [
     {
@@ -82,7 +82,7 @@ const Dashboard = () => {
             </div>
 
             <div className="space-y-6">
-              <UserInfoCard user={user} />
+              <UserInfoCard />
               <MoneyTransferCard />
 
               <motion.div
