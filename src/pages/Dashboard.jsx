@@ -10,37 +10,23 @@ import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
-import { searchUsers } from "../services/databases/users";
+import { getTransactionsByUser } from "../services/databases/transactions";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
   const provider = useAuth();
-  const transactions = [
-    {
-      name: "Salaire Acme Inc",
-      date: "Aujourd'hui",
-      amount: "+2,450.00 €",
-      type: "credit",
-    },
-    {
-      name: "Courses Supermarché",
-      date: "Hier",
-      amount: "-87.30 €",
-      type: "debit",
-    },
-    {
-      name: "Abonnement Spotify",
-      date: "Hier",
-      amount: "-9.99 €",
-      type: "debit",
-    },
-    {
-      name: "Virement Jean D.",
-      date: "05/06",
-      amount: "+150.00 €",
-      type: "credit",
-    },
-  ];
+  const [transactions, setTransactions] = useState(null);
+
+  useEffect(() => {
+    try {
+      getTransactionsByUser(provider?.user?.$id).then((res) => {
+        console.log(res);
+        setTransactions(res.documents);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [provider?.user?.$id]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
