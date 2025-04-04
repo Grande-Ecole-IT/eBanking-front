@@ -42,10 +42,10 @@ const Background = () => {
 
       {/* Grille technologique animée */}
       <motion.div
-        className="absolute inset-0 bg-grid-blue-200"
+        className="absolute inset-0 bg-grid-blue-200 opacity-60"
         style={{
           backgroundImage: `linear-gradient(to right, #B5D7FF 1px, transparent 1px), linear-gradient(to bottom, #B5D7FF 1px, transparent 1px)`,
-          backgroundSize: "80px 80px",
+          backgroundSize: "100px 100px",
         }}
         animate={{
           backgroundPosition: ["0% 0%", "90% 90%"],
