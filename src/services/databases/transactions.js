@@ -8,7 +8,7 @@ const TRANSACTIONS_COLLECTION_ID = "transactions";
  * @param {string} receiver - ID du destinataire 
  * @param {string} motif - Motif de la transaction
  * @param {number} montant - Montant de la transaction
- * @param {string} type - Type de transaction
+ * @param {string} type - Type de transaction soit envoi | reception
  * @returns {Promise<Object>}
  */
 export async function createTransaction(sender, receiver, motif, montant, type) {

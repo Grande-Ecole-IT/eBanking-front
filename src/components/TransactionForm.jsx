@@ -8,6 +8,8 @@ import {
   FiUser,
   FiX,
 } from "react-icons/fi";
+import { useAuth } from "../hooks/useAuth";
+import { createTransaction } from "../services/databases/transactions";
 
 const TransactionForm = ({ onClose }) => {
   const [recipient, setRecipient] = useState("");
@@ -15,20 +17,29 @@ const TransactionForm = ({ onClose }) => {
   const [purpose, setPurpose] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const provider = useAuth();
+  const user = provider?.user;
+  const type = "envoi";
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    try {
+      await createTransaction(user?.id, recipient, purpose, amount, type);
+    } catch (error) {
+      console.log(error);
+    }
+
     // Simulation d'envoi
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      setTimeout(() => {
-        setIsSuccess(false);
-        onClose(); // Fermer le modal après succès
-      }, 2000);
-    }, 1500);
+    // setTimeout(() => {
+    //   setIsSubmitting(false);
+    //   setIsSuccess(true);
+    //   setTimeout(() => {
+    //     setIsSuccess(false);
+    //     onClose();
+    //   }, 2000);
+    // }, 1500);
   };
 
   return (
