@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { 
+import { useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import {
   createUser,
-  loginWithEmail,
   getCurrentUser,
-  logout 
-} from '../services/authService';
+  loginWithEmail,
+  logout,
+} from "../services/authService";
 
-export const AuthContextProvider = ({ children }) => {
+const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
-        setLoading(true)
+      setLoading(true);
       try {
         const currentUser = await getCurrentUser();
         setUser(currentUser);
       } catch (err) {
-        throw new Error(err.message)
-      }finally{
+        throw new Error(err.message);
+      } finally {
         setLoading(false);
       }
     };
@@ -39,7 +39,7 @@ export const AuthContextProvider = ({ children }) => {
       const currentUser = await loginWithEmail(email, password);
       setUser(currentUser);
     } catch (err) {
-        throw new Error(err.message);
+      throw new Error(err.message);
     }
   };
 
@@ -48,7 +48,7 @@ export const AuthContextProvider = ({ children }) => {
       await logout();
       setUser(null);
     } catch (err) {
-        throw new Error(err.message);
+      throw new Error(err.message);
     }
   };
 
@@ -58,12 +58,10 @@ export const AuthContextProvider = ({ children }) => {
     signup,
     login,
     logout: logoutUser,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
   };
 
-  return (
-    <AuthContext value={value}>
-      {children}
-    </AuthContext>
-  );
+  return <AuthContext value={value}>{children}</AuthContext>;
 };
+
+export default AuthContextProvider;

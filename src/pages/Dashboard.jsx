@@ -8,17 +8,12 @@ import ChatBot from "../components/ChatBot";
 import MoneyTransferCard from "../components/MoneyTransferCard";
 import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
+import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
-  const user = {
-    name: "Alex Dupont",
-    email: "alex.dupont@example.com",
-    initials: "AD",
-    memberSince: "Jan 2022",
-    lastLogin: "Aujourd'hui, 09:42",
-  };
+  const { user } = useAuth();
 
   const transactions = [
     {
