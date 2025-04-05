@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
+import { NavLink } from "react-router";
 import TransactionItem from "./TransactionItem";
 
 const TransactionList = ({ transactions }) => (
@@ -13,7 +14,9 @@ const TransactionList = ({ transactions }) => (
       <h3 className="text-lg font-semibold text-blue-900">
         Dernières transactions
       </h3>
-      <button className="text-blue-500 text-sm font-medium">Voir tout</button>
+      <button className="text-blue-500 text-sm font-medium">
+        <NavLink to="/transaction">Voir tout</NavLink>
+      </button>
     </div>
     <div className="space-y-3">
       {transactions?.length == 0 ? (
