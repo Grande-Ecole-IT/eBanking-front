@@ -4,10 +4,16 @@ import { useEffect, useState } from "react";
 import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
 import { getUserDocument } from "../services/databases/users";
 import { formatDate } from "../utils/function";
+import { useAuth } from "../hooks/useAuth";
 
-const TransactionItem = ({ transaction }) => {
+const TransactionItem = ({ transaction = [] }) => {
   const [counterpartName, setCounterpartName] = useState("");
   const [loading, setLoading] = useState(true);
+  const provider = useAuth();
+  const userId = provider?.user?.$id;
+  const ENVOI = userId === transaction?.senderId;
+  const RECEPTION = userId === transaction?.receiverId;
+
 
   useEffect(() => {
     const fetchCounterpartName = async () => {
@@ -43,7 +49,7 @@ const TransactionItem = ({ transaction }) => {
       );
     }
 
-    if (transaction.type === "RECEPTION") {
+    if (RECEPTION) {
       return counterpartName ? `Reçu de ${counterpartName}` : "Reçu";
     } else {
       // ENVOI
@@ -63,12 +69,12 @@ const TransactionItem = ({ transaction }) => {
       <div className="flex items-center">
         <div
           className={`p-2 rounded-lg ${
-            transaction?.type === "ENVOI"
+            ENVOI
               ? "bg-blue-50 text-blue-500"
               : "bg-blue-100 text-blue-600"
           }`}
         >
-          {transaction?.type === "RECEPTION" ? (
+          {RECEPTION ? (
             <FiArrowDownLeft className="text-lg" />
           ) : (
             <FiArrowUpRight className="text-lg" />
@@ -85,7 +91,7 @@ const TransactionItem = ({ transaction }) => {
       </div>
       <p
         className={`font-medium ${
-          transaction.type === "ENVOI" ? "text-blue-600" : "text-blue-900"
+          ENVOI ? "text-blue-600" : "text-blue-900"
         }`}
       >
         {transaction?.montant}

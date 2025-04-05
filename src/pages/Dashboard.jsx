@@ -12,7 +12,7 @@ import UserInfoCard from "../components/UserInfoCard";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
 import { client, DATABASE_ID } from "../lib/appwrite";
-import { getTransactionsByUser } from "../services/databases/transactions";
+import { getRecentTransactionsByUser } from "../services/databases/transactions";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
@@ -22,13 +22,35 @@ const Dashboard = () => {
 
   useEffect(() => {
     try {
-      getTransactionsByUser(provider?.user?.$id).then((res) => {
+      getRecentTransactionsByUser(provider?.user?.$id).then((res) => {
         setTransactions(res.documents);
       });
     } catch (error) {
       console.log(error);
     }
   }, [provider?.user?.$id]);
+
+  useEffect(() => {
+    const unsubscribe = client.subscribe(
+      `databases.${DATABASE_ID}.collections.transactions.documents`,
+      (response) => {
+        if (
+          response.events.includes(
+            "databases.*.collections.*.documents.*.create"
+          )
+        ) {
+          transactions
+            ? setTransactions(response.payload,[...transactions])
+            : setTransactions([response.payload]);
+        }
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [transactions]);
+
 
   const historicals = [
     {
@@ -98,28 +120,7 @@ const Dashboard = () => {
       ipAddress: "85.203.45.12",
     },
   ];
-
-  useEffect(() => {
-    const unsubscribe = client.subscribe(
-      `databases.${DATABASE_ID}.collections.transactions.documents`,
-      (response) => {
-        if (
-          response.events.includes(
-            "databases.*.collections.*.documents.*.create"
-          )
-        ) {
-          transactions
-            ? setTransactions([...transactions, response.payload])
-            : setTransactions([response.payload]);
-        }
-      }
-    );
-
-    return () => {
-      unsubscribe();
-    };
-  }, [transactions]);
-
+  
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.ctrlKey && e.key === "k") {

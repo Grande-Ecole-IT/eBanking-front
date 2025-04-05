@@ -44,3 +44,24 @@ export async function getTransactionsByUser(userId) {
         ]
     );
 }
+
+/**
+ * Récupère les 5 dernières transactions d'un utilisateur
+ * @param {string} userId - ID de l'utilisateur
+ * @returns {Promise<Array<Object>>}
+ */
+export async function getRecentTransactionsByUser(userId) {
+    return await databases.listDocuments(
+        DATABASE_ID,
+        TRANSACTIONS_COLLECTION_ID,
+        [
+            Query.or([
+                Query.equal('senderId', userId),
+                Query.equal('receiverId', userId)
+            ]),
+            Query.orderDesc("$createdAt"),
+            Query.limit(5)
+        ]
+    );
+}
+
