@@ -65,7 +65,7 @@ const TransactionPage = () => {
       const names = {};
       const pictures = {};
 
-      // Collecter tous les IDs uniques
+      // Collecter tous les IDs uniques (en excluant l'utilisateur courant)
       const userIds = new Set();
       transactions.forEach((t) => {
         if (t.senderId && t.senderId !== currentUser?.$id)
@@ -186,6 +186,23 @@ const TransactionPage = () => {
       type: "all",
       dateRange: "all",
     });
+  };
+
+  // Détermine l'autre partie de la transaction et le type affiché
+  const getTransactionDisplayInfo = (transaction) => {
+    const isCurrentUserSender = transaction.senderId === currentUser?.$id;
+
+    return {
+      otherPartyId: isCurrentUserSender
+        ? transaction.receiverId
+        : transaction.senderId,
+      otherPartyRole: isCurrentUserSender ? "Destinataire" : "Expéditeur",
+      // Le type affiché doit être basé sur notre perspective
+      displayType: isCurrentUserSender ? "ENVOI" : "RECEPTION",
+      // Le signe du montant doit être basé sur notre perspective
+      amountSign: isCurrentUserSender ? "-" : "+",
+      amountColor: isCurrentUserSender ? "text-red-600" : "text-green-600",
+    };
   };
 
   return (
@@ -333,79 +350,72 @@ const TransactionPage = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {currentItems.map((t) => (
-                      <tr
-                        key={t.$id}
-                        className="hover:bg-gray-50 transition-colors"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {loadingNames ? (
-                            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
-                          ) : (
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
-                                {userPictures[
-                                  t.type === "ENVOI" ? t.receiverId : t.senderId
-                                ] ? (
-                                  <img
-                                    src={
-                                      userPictures[
-                                        t.type === "ENVOI"
-                                          ? t.receiverId
-                                          : t.senderId
-                                      ]
-                                    }
-                                    alt="Profile"
-                                    className="h-full w-full object-cover"
-                                  />
-                                ) : (
-                                  <FiUser className="text-blue-500" />
-                                )}
-                              </div>
-                              <div className="ml-4">
-                                <div className="text-sm font-medium text-gray-900">
-                                  {t.type === "ENVOI"
-                                    ? userNames[t.receiverId] || "Destinataire"
-                                    : userNames[t.senderId] || "Expéditeur"}
-                                </div>
-                                <div className="text-sm text-gray-500">
-                                  {t.type === "ENVOI"
-                                    ? "Destinataire"
-                                    : "Expéditeur"}
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm font-medium ${
-                              t.type === "ENVOI"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-blue-100 text-blue-800"
-                            }`}
-                          >
-                            {t.type}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDate(t.$createdAt)}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
-                          {t.motif || "Aucun motif spécifié"}
-                        </td>
-                        <td
-                          className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
-                            t.type === "reception"
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
+                    {currentItems.map((t) => {
+                      const {
+                        otherPartyId,
+                        otherPartyRole,
+                        displayType,
+                        amountSign,
+                        amountColor,
+                      } = getTransactionDisplayInfo(t);
+
+                      return (
+                        <tr
+                          key={t.$id}
+                          className="hover:bg-gray-50 transition-colors"
                         >
-                          {t.type === "reception" ? "+" : "-"}{" "}
-                          {formatCurrency(t.montant)}
-                        </td>
-                      </tr>
-                    ))}
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {loadingNames ? (
+                              <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                            ) : (
+                              <div className="flex items-center">
+                                <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
+                                  {userPictures[otherPartyId] ? (
+                                    <img
+                                      src={userPictures[otherPartyId]}
+                                      alt="Profile"
+                                      className="h-full w-full object-cover"
+                                    />
+                                  ) : (
+                                    <FiUser className="text-blue-500" />
+                                  )}
+                                </div>
+                                <div className="ml-4">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {userNames[otherPartyId] || otherPartyRole}
+                                  </div>
+                                  <div className="text-sm text-gray-500">
+                                    {otherPartyRole}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                displayType === "ENVOI"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-blue-100 text-blue-800"
+                              }`}
+                            >
+                              {displayType}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {formatDate(t.$createdAt)}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {t.motif || "Aucun motif spécifié"}
+                          </td>
+                          <td
+                            className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${amountColor}`}
+                          >
+                            {amountSign} {formatCurrency(t.montant)}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -469,7 +479,7 @@ const TransactionPage = () => {
   );
 };
 
-// Composants supplémentaires
+// Composants supplémentaires (restent inchangés)
 const StatCard = ({ title, value, icon, bgColor, isPositive }) => (
   <div
     className={`${bgColor} rounded-xl p-6 shadow-sm border border-gray-200 transition-transform hover:scale-[1.02]`}
