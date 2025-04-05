@@ -16,7 +16,7 @@ import { getRecentTransactionsByUser } from "../services/databases/transactions"
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
-  const [transactions, setTransactions] = useState(null);
+  const [transactions, setTransactions] = useState([]);
   const { user } = useAuth();
   const provider = useAuth();
 
@@ -39,18 +39,16 @@ const Dashboard = () => {
             "databases.*.collections.*.documents.*.create"
           )
         ) {
-          transactions
-            ? setTransactions(response.payload,[...transactions])
-            : setTransactions([response.payload]);
+          // Vérifier que le payload est valide
+          if (response.payload && typeof response.payload === "object") {
+            setTransactions((prev) => [response.payload, ...(prev || [])]);
+          }
         }
       }
     );
 
-    return () => {
-      unsubscribe();
-    };
-  }, [transactions]);
-
+    return () => unsubscribe();
+  }, []);
 
   const historicals = [
     {
@@ -120,7 +118,7 @@ const Dashboard = () => {
       ipAddress: "85.203.45.12",
     },
   ];
-  
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.ctrlKey && e.key === "k") {

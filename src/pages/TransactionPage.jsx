@@ -11,6 +11,7 @@ import {
   FiType,
   FiUser,
 } from "react-icons/fi";
+import Loader from "../components/Loader";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
 import { getTransactionsByUser } from "../services/databases/transactions";
@@ -67,18 +68,22 @@ const TransactionPage = () => {
       // Collecter tous les IDs uniques
       const userIds = new Set();
       transactions.forEach((t) => {
-        if (t.senderId) userIds.add(t.senderId);
-        if (t.receiverId) userIds.add(t.receiverId);
+        if (t.senderId && t.senderId !== currentUser?.$id)
+          userIds.add(t.senderId);
+        if (t.receiverId && t.receiverId !== currentUser?.$id)
+          userIds.add(t.receiverId);
       });
 
-      // Paralléliser les requêtes
+      // Paralléliser les requêtes avec gestion des erreurs
       await Promise.all(
         Array.from(userIds).map(async (id) => {
           try {
             const user = await getUserDocument(id);
-            names[id] = user?.name || "Utilisateur inconnu";
-            if (user?.picture) {
-              pictures[id] = user.picture;
+            if (user) {
+              names[id] = user?.name || `Utilisateur ${id.slice(0, 6)}...`;
+              if (user?.picture) {
+                pictures[id] = user.picture;
+              }
             }
           } catch (error) {
             console.error(`Failed to load user ${id}:`, error);
@@ -302,7 +307,7 @@ const TransactionPage = () => {
 
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              <Loader />
             </div>
           ) : (
             <>
@@ -340,12 +345,12 @@ const TransactionPage = () => {
                             <div className="flex items-center">
                               <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
                                 {userPictures[
-                                  t.type === "envoi" ? t.receiverId : t.senderId
+                                  t.type === "ENVOI" ? t.receiverId : t.senderId
                                 ] ? (
                                   <img
                                     src={
                                       userPictures[
-                                        t.type === "envoi"
+                                        t.type === "ENVOI"
                                           ? t.receiverId
                                           : t.senderId
                                       ]
@@ -359,7 +364,7 @@ const TransactionPage = () => {
                               </div>
                               <div className="ml-4">
                                 <div className="text-sm font-medium text-gray-900">
-                                  {t.type === "envoi"
+                                  {t.type === "ENVOI"
                                     ? userNames[t.receiverId] || "Destinataire"
                                     : userNames[t.senderId] || "Expéditeur"}
                                 </div>
@@ -372,8 +377,16 @@ const TransactionPage = () => {
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
-                          {t.type.toLowerCase()}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-medium ${
+                              t.type === "ENVOI"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
+                          >
+                            {t.type}
+                          </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {formatDate(t.$createdAt)}
