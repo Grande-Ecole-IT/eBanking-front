@@ -67,17 +67,6 @@ const Dashboard = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = async (e) => {
-    e.preventDefault();
-
-    try {
-      await logout();
-      navigate("/login");
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
-
   const [showModal, setShowModal] = useState(false);
   const [users, setUsers] = useState(null);
 
@@ -105,15 +94,15 @@ const Dashboard = () => {
                   <span className="text-gray-400">.24</span>
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex space-x-2">
                   <button
                     onClick={() => setShowModal(true)}
-                    className="flex items-center gap-2 bg-blue-100/50 text-blue-700 px-6 py-2 rounded-full hover:bg-blue-100"
+                    className="flex items-center gap-1.5 bg-blue-100/50 text-blue-700 px-6 py-2 rounded-xl hover:bg-blue-100"
                   >
                     <BiSend size={20} />
                     Envoyer
                   </button>
-                  <button className="flex items-center gap-2 bg-blue-100/50 text-blue-700 px-6 py-2 rounded-full hover:bg-blue-100">
+                  <button className="flex items-center gap-2 bg-blue-100/50 text-blue-700 px-6 py-2 rounded-xl hover:bg-blue-100">
                     <BiDownload size={20} />
                     Demander
                   </button>
