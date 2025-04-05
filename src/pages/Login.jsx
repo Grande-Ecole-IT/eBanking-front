@@ -7,6 +7,22 @@ import { useAuth } from "../hooks/useAuth";
 import { getAllUsers } from "../services/databases/users";
 
 function Login() {
+  const [frame, setFrame] = useState("");
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:8000/video");
+
+    ws.onopen = () => {
+      ws.send(0);
+    };
+    ws.onmessage = (event) => {
+      setFrame(`data:image/jpeg;base64,${event.data}`);
+    };
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => ws.close();
+  }, []);
   const [users, setUsers] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
@@ -129,7 +145,7 @@ function Login() {
     });
   }, []);
 
-  console.log(users)
+  console.log(users);
 
   return (
     <AuthLayout
@@ -148,12 +164,10 @@ function Login() {
           <div className="flex flex-col items-center justify-center mb-6 animate-fade-in">
             {/* Cadre circulaire avec effet de halo */}
             <div className="relative">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className="w-60 h-60 rounded-full object-cover border-4 border-blue-100 shadow-lg transform transition-all duration-300 hover:scale-105"
+              <img
+                src={frame}
+                alt="Video Stream"
+                className="w-full rounded-lg shadow-md"
               />
 
               {/* Effet de halo animé */}

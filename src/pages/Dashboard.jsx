@@ -24,7 +24,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [modalState, setModalState] = useState({
     open: false,
-    type: null, // 'send' or 'request'
+    type: null, 
     user: null,
   });
   const [users, setUsers] = useState([]);
@@ -32,7 +32,6 @@ const Dashboard = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [transactionDemands, setTransactionDemands] = useState(null);
 
-  // Charger les données
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -98,7 +97,7 @@ const Dashboard = () => {
               <div className="bg-white rounded-3xl p-6 shadow-sm">
                 <h2 className="text-gray-600 mb-2">Total Solde</h2>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-bold">£31,180</span>
+                  <span className="text-4xl font-bold">{user?.solde}</span>
                   <span className="text-gray-400">.24</span>
                 </div>
 

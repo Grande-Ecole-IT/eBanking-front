@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FiMessageSquare, FiSend, FiX, FiZap, FiMic } from "react-icons/fi";
-import { getAllUsers } from "../services/databases/users";
+import { getAllUsers, updateUserBalance } from "../services/databases/users";
 import { useAuth } from "../hooks/useAuth";
 import { createTransaction } from "../services/databases/transactions";
 
@@ -96,8 +96,8 @@ const ChatBot = ({ isOpen, onClose }) => {
               "ENVOI"
             );
 
-            // updateSolde(idUser)
-
+            const amount = currentUser.solde - result.amount;
+            updateUserBalance(currentUser.$id, amount);
             setTimeout(onClose, 2000);
           } catch (error) {
             console.error("Transaction error:", error);
@@ -123,6 +123,8 @@ const ChatBot = ({ isOpen, onClose }) => {
       } else if (result.type == "DEMAND") {
         const user = verifyIfExistingUser(result.sender);
         if (user) {
+          const amount = currentUser.solde + result.amount;
+          updateUserBalance(currentUser.$id, amount);
           setMessages([
             ...messages,
             {
