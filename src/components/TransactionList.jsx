@@ -16,9 +16,17 @@ const TransactionList = ({ transactions }) => (
       <button className="text-blue-500 text-sm font-medium">Voir tout</button>
     </div>
     <div className="space-y-3">
-      {transactions?.map((transaction, index) => (
-        <TransactionItem key={index} transaction={transaction} />
-      ))}
+      {transactions?.length == 0 ? (
+        <p className="text-center text-slate-600">
+          Aucune transaction pour le moment
+        </p>
+      ) : (
+        <>
+          {transactions?.map((transaction, index) => (
+            <TransactionItem key={index} transaction={transaction} />
+          ))}
+        </>
+      )}
     </div>
   </motion.div>
 );

@@ -6,37 +6,59 @@ import { getUserDocument } from "../services/databases/users";
 import { formatDate } from "../utils/function";
 
 const TransactionItem = ({ transaction }) => {
-  const [userName, setUserName] = useState("");
+  const [counterpartName, setCounterpartName] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserName = async () => {
+    const fetchCounterpartName = async () => {
       try {
-        const userId =
-          transaction.type === "ENVOI"
-            ? transaction.recipient
-            : transaction.sender;
-
-        if (userId) {
-          const userDoc = await getUserDocument(userId);
-          setUserName(userDoc?.name || "Utilisateur inconnu");
+        // Pour les réceptions seulement, on cherche le nom de l'envoyeur
+        if (transaction.type === "RECEPTION" && transaction.senderId) {
+          const userDoc = await getUserDocument(transaction.senderId);
+          setCounterpartName(userDoc?.name || "");
+        }
+        // Pour les envois, on cherche le nom du receveur si le motif est vide
+        else if (
+          transaction.type === "ENVOI" &&
+          !transaction.motif &&
+          transaction.receiverId
+        ) {
+          const userDoc = await getUserDocument(transaction.receiverId);
+          setCounterpartName(userDoc?.name || "");
         }
       } catch (error) {
         console.error("Error fetching user:", error);
-        setUserName("Utilisateur inconnu");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserName();
+    fetchCounterpartName();
   }, [transaction]);
+
+  const getTransactionDescription = () => {
+    if (loading) {
+      return (
+        <span className="inline-block h-4 w-32 bg-blue-100 rounded animate-pulse"></span>
+      );
+    }
+
+    if (transaction.type === "RECEPTION") {
+      return counterpartName ? `Reçu de ${counterpartName}` : "Reçu";
+    } else {
+      // ENVOI
+      return (
+        transaction.motif ||
+        (counterpartName ? `Envoi à ${counterpartName}` : "Envoi")
+      );
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex justify-between items-center p-3 border-b rounded-xl border-blue-50 last:border-0 hover:bg-slate-100/50"
+      className="flex justify-between items-center py-3 border-b border-blue-50 last:border-0 hover:bg-slate-50"
     >
       <div className="flex items-center">
         <div
@@ -54,15 +76,7 @@ const TransactionItem = ({ transaction }) => {
         </div>
         <div className="ml-4">
           <p className="font-medium text-blue-900">
-            {loading ? (
-              <span className="inline-block h-4 w-32 bg-blue-100 rounded animate-pulse"></span>
-            ) : transaction.motif ? (
-              transaction.motif
-            ) : transaction.type === "ENVOI" ? (
-              `Envoi à ${userName}`
-            ) : (
-              `Reçu de ${userName}`
-            )}
+            {getTransactionDescription()}
           </p>
           <p className="text-blue-500 text-xs">
             {formatDate(transaction?.$createdAt)}

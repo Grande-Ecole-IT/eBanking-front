@@ -39,7 +39,8 @@ export async function getTransactionsByUser(userId) {
             Query.or([
                 Query.equal('senderId', userId),
                 Query.equal('receiverId', userId)
-            ])
+            ]),
+            Query.orderDesc("$createdAt")
         ]
     );
 }

@@ -66,9 +66,7 @@ const TransactionForm = ({ onClose, users = [] }) => {
       console.error("No recipient selected");
       return;
     }
-
     setIsSubmitting(true);
-
     try {
       await createTransaction(
         currentUser?.$id,

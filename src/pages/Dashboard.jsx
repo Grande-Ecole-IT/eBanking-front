@@ -10,9 +10,7 @@ import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
-import { searchUsers } from "../services/databases/users";
-import HistoricalList from "../components/HistoricalList";
-
+import { client, DATABASE_ID } from "../lib/appwrite";
 import { getTransactionsByUser } from "../services/databases/transactions";
 
 const Dashboard = () => {
@@ -24,14 +22,13 @@ const Dashboard = () => {
   useEffect(() => {
     try {
       getTransactionsByUser(provider?.user?.$id).then((res) => {
-        console.log(res);
         setTransactions(res.documents);
       });
     } catch (error) {
       console.log(error);
     }
   }, [provider?.user?.$id]);
-  
+
   const historicals = [
     {
       id: 1,
@@ -101,6 +98,26 @@ const Dashboard = () => {
     },
   ];
 
+  useEffect(() => {
+    const unsubscribe = client.subscribe(
+      `databases.${DATABASE_ID}.collections.transactions.documents`,
+      (response) => {
+        if (
+          response.events.includes(
+            "databases.*.collections.*.documents.*.create"
+          )
+        ) {
+          transactions
+            ? setTransactions([...transactions, response.payload])
+            : setTransactions([response.payload]);
+        }
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [transactions]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -142,7 +159,7 @@ const Dashboard = () => {
             </div>
 
             <div className="space-y-6">
-              <UserInfoCard user={user}/>
+              <UserInfoCard user={user} />
               <MoneyTransferCard />
 
               <motion.div
