@@ -5,6 +5,7 @@ import logo from "../assets/Logo.png";
 import BalanceCard from "../components/BalanceCard";
 import Button from "../components/Button";
 import ChatBot from "../components/ChatBot";
+import HistoricalList from "../components/HistoricalList";
 import MoneyTransferCard from "../components/MoneyTransferCard";
 import TransactionList from "../components/TransactionList";
 import UserInfoCard from "../components/UserInfoCard";
