@@ -96,6 +96,8 @@ const ChatBot = ({ isOpen, onClose }) => {
               "ENVOI"
             );
 
+            // updateSolde(idUser)
+
             setTimeout(onClose, 2000);
           } catch (error) {
             console.error("Transaction error:", error);

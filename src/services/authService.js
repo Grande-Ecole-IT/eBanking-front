@@ -10,7 +10,8 @@ import { createUserDocument, getUserDocument } from './databases/users';
  * @param {File} [profileImage] 
  * @returns {Promise<Object>}
  */
-export async function createUser(email, password, name , profileImage = null) {
+export async function createUser(email, password, name, profileImage = null) {
+    const solde = Math.floor(Math.random() * 50000 + 50000); 
     try {
         // 1. Création du compte Auth
         const authAccount = await account.create(ID.unique(), email, password, name);
@@ -25,6 +26,7 @@ export async function createUser(email, password, name , profileImage = null) {
         const userData = {
             name,
             email,
+            solde,
             picture: getProfileView(profileImageId),
         };
         
