@@ -64,3 +64,27 @@ export async function getAllUsers() {
         USER_COLLECTION_ID
     );
 }
+
+
+/**
+ * Met à jour le solde d'un utilisateur
+ * @param {string} userId - ID de l'utilisateur
+ * @param {number} amount - Montant à ajouter (peut être négatif pour soustraire)
+ * @returns {Promise<Object>} - Document utilisateur mis à jour
+ */
+export const updateUserBalance = async (userId, amount) => {
+    try {
+      return await databases.updateDocument(
+        DATABASE_ID,
+        USER_COLLECTION_ID,
+        userId,
+        {
+          solde: amount
+        }
+      );
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du solde:", error);
+      throw error;
+    }
+  };
+  
