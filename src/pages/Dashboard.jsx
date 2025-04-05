@@ -137,14 +137,38 @@ const Dashboard = () => {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 pb-10">
         <ChatBot isOpen={chatbotOpen} onClose={() => setChatbotOpen(false)} />
 
+        {/* Header simplifié comme dans le screenshot */}
+        <header className="py-4 border-b border-gray-200">
+          <div className="flex justify-between items-center border">
+            <img src={logo} alt="FlashPay" className="w-20 mt-0 border-2" />
+
+            {/* Navigation */}
+            <nav className="mt-4 flex space-x-6">
+              <a href="#" className="text-blue-600 font-medium">
+                All
+              </a>
+              <a href="#" className="text-gray-500 hover:text-blue-600">
+                Transactions
+              </a>
+              <a href="#" className="text-gray-500 hover:text-blue-600">
+                Analysis
+              </a>
+              <a href="#" className="text-gray-500 hover:text-blue-600">
+                Expenses
+              </a>
+              <a href="#" className="text-gray-500 hover:text-blue-600">
+                Spending
+              </a>
+            </nav>
+            <UserInfoCard user={user} />
+          </div>
+        </header>
         <div className="max-w-7xl mx-auto">
           <motion.header
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             className="flex justify-between items-center mb-2"
           >
-            <img src={logo} alt="FlashPay" className="w-30 h-auto" />
-
             <div className="flex items-center space-x-4">
               <Button onClick={() => setChatbotOpen(true)} variant="primary">
                 <span>Assistant (Ctrl+K)</span>
@@ -159,7 +183,6 @@ const Dashboard = () => {
             </div>
 
             <div className="space-y-6">
-              <UserInfoCard user={user} />
               <MoneyTransferCard />
 
               <motion.div
