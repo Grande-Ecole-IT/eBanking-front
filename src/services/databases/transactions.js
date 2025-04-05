@@ -65,3 +65,24 @@ export async function getRecentTransactionsByUser(userId) {
     );
 }
 
+/**
+ * Récupère les transactions de réception pour un utilisateur (où l'utilisateur est l'expéditeur)
+ * @param {string} userId - ID de l'utilisateur
+ * @returns {Promise<Array<Object>>}
+ */
+export async function getReceptionTransactions(userId) {
+    return await databases.listDocuments(
+        DATABASE_ID,
+        TRANSACTIONS_COLLECTION_ID,
+        [
+            Query.and([
+                Query.equal('senderId', userId),
+                Query.equal('type', 'RECEPTION')
+            ]),
+            Query.orderDesc("$createdAt")
+        ]
+    );
+}
+
+
+

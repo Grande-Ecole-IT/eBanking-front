@@ -3,10 +3,22 @@ import { motion } from "framer-motion";
 import { NavLink, useNavigate } from "react-router";
 import Logo from "../assets/Logo.png";
 import { useAuth } from "../hooks/useAuth";
+import DashboardNotification from './DashboardNotification';
+import { useEffect, useState } from "react";
+import { getReceptionTransactions } from "../services/databases/transactions";
 
 const Navbar = ({ logo }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [transactionDemands, setTransactionDemands] = useState(null);
+  const provider = useAuth();
+  const [notificationCardView, setNotificationCardView] = useState(false);
+
+  const toggleNotificationCardView = () => setNotificationCardView(v => !v);
+
+    useEffect(() => {
+      getReceptionTransactions(provider?.user?.$id).then(res => setTransactionDemands(res.documents)).catch(console.log);
+    }, [provider?.user?.$id])
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -65,7 +77,8 @@ const Navbar = ({ logo }) => {
           {/* Section droite avec notifications et profil */}
           <div className="flex items-center space-x-6">
             {/* Icône de notifications */}
-            <button className="relative p-1 text-gray-500 hover:text-blue-600">
+              <div>
+              <button onClick={toggleNotificationCardView} className="relative p-1 text-gray-500 hover:text-blue-600">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -81,6 +94,10 @@ const Navbar = ({ logo }) => {
               </svg>
               <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
             </button>
+            <div>
+              {notificationCardView && <DashboardNotification  transactionDemands={transactionDemands}/>}
+            </div>
+              </div>
 
             {/* Profil utilisateur avec déconnexion */}
             <div className="flex items-center space-x-4">
