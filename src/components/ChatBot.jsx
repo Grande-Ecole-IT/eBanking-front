@@ -2,6 +2,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FiMessageSquare, FiSend, FiX, FiZap, FiMic } from "react-icons/fi";
+import { getAllUsers } from "../services/databases/users";
+import { useAuth } from "../hooks/useAuth";
+import { createTransaction } from "../services/databases/transactions";
 
 const ChatBot = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
@@ -10,9 +13,46 @@ const ChatBot = ({ isOpen, onClose }) => {
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
+  const [users, setUsers] = useState(null);
+  const { user: currentUser } = useAuth() || {};
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  useEffect(() => {
+    getAllUsers().then((res) => {
+      setUsers(res.documents);
+    });
+  }, []);
+
+  const verifyIfExistingUser = (username) => {
+    if (!username || !users) {
+      console.warn("Username ou liste d'utilisateurs manquant");
+      return null;
+    }
+    const normalizedUsername = username.trim().replace(/^@+/, "").toLowerCase();
+    const existingUser = users.find((user) => {
+      const normalizedUserName = user.name?.toLowerCase();
+      return normalizedUserName === normalizedUsername || user.$id === username;
+    });
+
+    if (existingUser) {
+      return {
+        ...existingUser,
+        matchType: existingUser.email?.includes(normalizedUsername)
+          ? "email"
+          : "name",
+      };
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    if (users && currentUser?.$id) {
+      const filtered = users.filter((user) => user.$id !== currentUser.$id);
+      setFilteredUsers(filtered);
+    }
+  }, [users, currentUser?.$id]);
 
   const doTransaction = async (transactionData) => {
-    console.log(transactionData);
     try {
       const response = await fetch(
         "https://ebanking-back.onrender.com/transaction-analyzer/",
@@ -31,26 +71,82 @@ const ChatBot = ({ isOpen, onClose }) => {
       }
 
       const result = await response.json();
-      console.log("Transaction réussie:", result);
       if (result.type == "SEND") {
-        setMessages([
-          ...messages,
-          {
-            text: `Ok je vais envoyé ${result.amount} ${result.currency} à ${result.receiver}`,
-            sender: "bot",
-          },
-        ]);
+        const user = verifyIfExistingUser(result.receiver);
+        if (user) {
+          setMessages([
+            ...messages,
+            {
+              text: `Ok je vais envoyé ${result.amount} ${result.currency} à ${result.receiver}`,
+              sender: "bot",
+            },
+            {
+              text: "Envoi en cours...",
+              sender: "bot",
+              status: "processing",
+              animation: "ripple",
+            },
+          ]);
+          try {
+            await createTransaction(
+              currentUser?.$id,
+              result.receiver,
+              result.purpose,
+              parseFloat(result.amount),
+              "ENVOI"
+            );
+
+            setTimeout(onClose, 2000);
+          } catch (error) {
+            console.error("Transaction error:", error);
+          } finally {
+            setMessages((prev) => [
+              ...prev.filter((msg) => msg.status !== "processing"),
+              {
+                text: `Transaction de ${result.amount} ${result.currency} effectuée avec succès à ${result.receiver}`,
+                sender: "bot",
+                status: "completed",
+              },
+            ]);
+          }
+        } else {
+          setMessages([
+            ...messages,
+            {
+              text: `L'user ${result.receiver} n'existe pas. Veuillez bien verifier.`,
+              sender: "bot",
+            },
+          ]);
+        }
       } else if (result.type == "DEMAND") {
-        setMessages([
-          ...messages,
-          {
-            text: `Ok je vais envoyé une demande à ${result.sender} une valeur de ${result.amount} ${result.currency} `,
-            sender: "bot",
-          },
-        ]);
+        const user = verifyIfExistingUser(result.sender);
+        if (user) {
+          setMessages([
+            ...messages,
+            {
+              text: `Ok je vais envoyé une demande à ${result.sender} une valeur de ${result.amount} ${result.currency} `,
+              sender: "bot",
+            },
+          ]);
+        } else {
+          setMessages([
+            ...messages,
+            {
+              text: `L'user ${result.sender} n'existe pas. Veuillez bien verifier.`,
+              sender: "bot",
+            },
+          ]);
+        }
       }
       return result;
     } catch (error) {
+      setMessages([
+        ...messages,
+        {
+          text: `Erreur lors de la transaction. Veuillez bien verifier votre message`,
+          sender: "bot",
+        },
+      ]);
       console.error("Erreur lors de la transaction:", error);
       throw error;
     }
@@ -63,6 +159,8 @@ const ChatBot = ({ isOpen, onClose }) => {
         content: recentMess.text,
       };
       const result = doTransaction(transactionData);
+      const user = getAllUsers();
+      console.log(user);
     }
   }, [recentMess]);
 
@@ -226,13 +324,45 @@ const ChatBot = ({ isOpen, onClose }) => {
                       }`}
                     >
                       <div
-                        className={`max-w-xs p-4 rounded-2xl ${
+                        className={`relative max-w-xs p-4 rounded-2xl ${
                           message.sender === "user"
                             ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-br-none shadow-blue-200/50 shadow-md"
                             : "bg-white border border-blue-100 rounded-bl-none shadow-sm"
                         }`}
                       >
                         {message.text}
+
+                        {/* Effet d'ondulation pour les messages en cours */}
+                        {message.status === "processing" && (
+                          <div className="absolute -bottom-1.5 left-3 right-3 flex justify-center space-x-1">
+                            {[...Array(3)].map((_, i) => (
+                              <motion.div
+                                key={i}
+                                initial={{ scale: 0.5, y: 0 }}
+                                animate={{
+                                  scale: [1, 1.2, 1],
+                                  y: [0, -3, 0],
+                                }}
+                                transition={{
+                                  repeat: Infinity,
+                                  duration: 1,
+                                  delay: i * 0.2,
+                                }}
+                                className="w-2 h-2 bg-blue-400 rounded-full"
+                              />
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Barre de progression */}
+                        {message.status === "processing" && (
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: "100%" }}
+                            transition={{ duration: 2, ease: "linear" }}
+                            className="absolute bottom-0 left-0 h-0.5 bg-blue-300 rounded-full"
+                          />
+                        )}
                       </div>
                     </motion.div>
                   ))}
