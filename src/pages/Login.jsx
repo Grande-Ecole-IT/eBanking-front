@@ -104,7 +104,7 @@ function Login() {
             navigate("/dashboard")
           );
         } catch (error) {
-          console.error("Login error:", error);
+          console.error("Lodgin error:", error);
         } finally {
           setLoading(false);
         }
