@@ -4,8 +4,10 @@ import AuthLayout from "../layout/AuthLayout";
 import Button from "../components/Button";
 import Loader from "../components/Loader";
 import { useAuth } from "../hooks/useAuth";
+import { getAllUsers } from "../services/databases/users";
 
 function Login() {
+  const [users, setUsers] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -120,6 +122,14 @@ function Login() {
       stopCamera();
     };
   }, []);
+
+  useEffect(() => {
+    getAllUsers().then((res) => {
+      setUsers(res.documents);
+    });
+  }, []);
+
+  console.log(users)
 
   return (
     <AuthLayout

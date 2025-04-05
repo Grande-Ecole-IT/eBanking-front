@@ -13,6 +13,7 @@ import { getAllUsers } from "../services/databases/users";
 import { BiDownload, BiSend } from "react-icons/bi";
 import { BarChart2, Calendar, CreditCard, PieChart, Settings } from "lucide-react";
 import TransactionForm from "../components/TransactionForm";
+import FinancialLineChart from "../components/FinancialLineChart";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
@@ -359,7 +360,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-white w-full h-60 rounded-3xl my-6"></div>
+            <FinancialLineChart />
           </div>
           <div className="flex flex-col">
             <TransactionList transactions={transactions} />
