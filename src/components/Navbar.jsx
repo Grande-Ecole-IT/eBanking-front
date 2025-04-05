@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import Logo from "../assets/Logo.png";
 import { useAuth } from "../hooks/useAuth";
-import DashboardNotification from './DashboardNotification';
-import { useEffect, useState } from "react";
 import { getReceptionTransactions } from "../services/databases/transactions";
+import DashboardNotification from "./DashboardNotification";
 
 const Navbar = ({ logo }) => {
   const { user, logout } = useAuth();
@@ -14,11 +14,13 @@ const Navbar = ({ logo }) => {
   const provider = useAuth();
   const [notificationCardView, setNotificationCardView] = useState(false);
 
-  const toggleNotificationCardView = () => setNotificationCardView(v => !v);
+  const toggleNotificationCardView = () => setNotificationCardView((v) => !v);
 
-    useEffect(() => {
-      getReceptionTransactions(provider?.user?.$id).then(res => setTransactionDemands(res.documents)).catch(console.log);
-    }, [provider?.user?.$id])
+  useEffect(() => {
+    getReceptionTransactions(provider?.user?.$id)
+      .then((res) => setTransactionDemands(res.documents))
+      .catch(console.log);
+  }, [provider?.user?.$id]);
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -77,27 +79,36 @@ const Navbar = ({ logo }) => {
           {/* Section droite avec notifications et profil */}
           <div className="flex items-center space-x-6">
             {/* Icône de notifications */}
-              <div>
-              <button onClick={toggleNotificationCardView} className="relative p-1 text-gray-500 hover:text-blue-600">
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-            </button>
             <div>
-              {notificationCardView && <DashboardNotification  transactionDemands={transactionDemands}/>}
-            </div>
+              <button
+                onClick={toggleNotificationCardView}
+                className="relative p-1 text-gray-500 hover:text-blue-600"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+                <span className="absolute top-0 right-0 h-4 w-4 text-white text-sm rounded-full bg-red-500">
+                  {transactionDemands?.length}
+                </span>
+              </button>
+              <div>
+                {notificationCardView && (
+                  <DashboardNotification
+                    transactionDemands={transactionDemands}
+                  />
+                )}
               </div>
+            </div>
 
             {/* Profil utilisateur avec déconnexion */}
             <div className="flex items-center space-x-4">

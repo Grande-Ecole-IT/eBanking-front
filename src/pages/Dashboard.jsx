@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { AnimatePresence, motion } from "framer-motion";
+import { BarChart2, Calendar, CreditCard, PieChart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BiDownload, BiSend } from "react-icons/bi";
 import { FiZap } from "react-icons/fi";
@@ -11,11 +12,11 @@ import TransactionList from "../components/TransactionList";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
 import { client, DATABASE_ID } from "../lib/appwrite";
-import { getRecentTransactionsByUser, getReceptionTransactions, getTransactionsByUser } from "../services/databases/transactions";
-import { useNavigate } from "react-router";
+import {
+  getReceptionTransactions,
+  getTransactionsByUser,
+} from "../services/databases/transactions";
 import { getAllUsers } from "../services/databases/users";
-import { BarChart2, Calendar, CreditCard, PieChart, Settings } from "lucide-react";
-import DashboardNotification from "../components/DashboardNotification";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
@@ -50,9 +51,10 @@ const Dashboard = () => {
 
   // Abonnement aux transactions
   useEffect(() => {
-    getReceptionTransactions(provider?.user?.$id).then(res => setTransactionDemands(res.documents)).catch(console.log);
-  }, [provider?.user?.$id])
-  
+    getReceptionTransactions(provider?.user?.$id)
+      .then((res) => setTransactionDemands(res.documents))
+      .catch(console.log);
+  }, [provider?.user?.$id]);
 
   useEffect(() => {
     const unsubscribe = client.subscribe(
@@ -88,7 +90,7 @@ const Dashboard = () => {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 pb-10">
         <ChatBot isOpen={chatbotOpen} onClose={() => setChatbotOpen(false)} />
         <Navbar />
-        
+
         <div className="grid grid-cols-[1fr_0.72fr] mt-6 space-x-6">
           <div className="flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-evenly">
