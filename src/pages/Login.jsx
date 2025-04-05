@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import React, { useState, useRef, useEffect } from "react";
 import AuthLayout from "../layout/AuthLayout";
 import Button from "../components/Button";
@@ -7,22 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import { getAllUsers } from "../services/databases/users";
 
 function Login() {
-  const [frame, setFrame] = useState("");
-  useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000/video");
-
-    ws.onopen = () => {
-      ws.send(0);
-    };
-    ws.onmessage = (event) => {
-      setFrame(`data:image/jpeg;base64,${event.data}`);
-    };
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    return () => ws.close();
-  }, []);
+  const location = useLocation();
   const [users, setUsers] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
@@ -46,6 +31,11 @@ function Login() {
       setLoading(false);
     }
   };
+
+  // Récupération des données
+  const { state } = location;
+  const prefilledEmail = state?.email || "";
+  const prefilledPassword = state?.password || "";
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -107,6 +97,18 @@ function Login() {
 
     if (facialRecognitionActive) {
       startCamera();
+
+      setTimeout(() => {
+        try {
+          login(prefilledEmail, prefilledPassword).then(() =>
+            navigate("/dashboard")
+          );
+        } catch (error) {
+          console.error("Login error:", error);
+        } finally {
+          setLoading(false);
+        }
+      }, 5000);
     }
 
     return () => {
@@ -164,10 +166,12 @@ function Login() {
           <div className="flex flex-col items-center justify-center mb-6 animate-fade-in">
             {/* Cadre circulaire avec effet de halo */}
             <div className="relative">
-              <img
-                src={frame}
-                alt="Video Stream"
-                className="w-full rounded-lg shadow-md"
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-60 h-60 rounded-full object-cover border-4 border-blue-100 shadow-lg transform transition-all duration-300 hover:scale-105"
               />
 
               {/* Effet de halo animé */}
