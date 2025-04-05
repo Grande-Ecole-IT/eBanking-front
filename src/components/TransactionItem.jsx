@@ -2,9 +2,9 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
+import { useAuth } from "../hooks/useAuth";
 import { getUserDocument } from "../services/databases/users";
 import { formatDate } from "../utils/function";
-import { useAuth } from "../hooks/useAuth";
 
 const TransactionItem = ({ transaction = [] }) => {
   const [counterpartName, setCounterpartName] = useState("");
@@ -13,7 +13,6 @@ const TransactionItem = ({ transaction = [] }) => {
   const userId = provider?.user?.$id;
   const ENVOI = userId === transaction?.senderId;
   const RECEPTION = userId === transaction?.receiverId;
-
 
   useEffect(() => {
     const fetchCounterpartName = async () => {
@@ -64,14 +63,12 @@ const TransactionItem = ({ transaction = [] }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex justify-between items-center py-3 border-b border-blue-50 last:border-0 hover:bg-slate-50"
+      className="flex justify-between items-center py-3 border-b border-blue-50 last:border-0 hover:bg-blue-100 p-2 rounded-xl"
     >
       <div className="flex items-center">
         <div
           className={`p-2 rounded-lg ${
-            ENVOI
-              ? "bg-blue-50 text-blue-500"
-              : "bg-blue-100 text-blue-600"
+            ENVOI ? "bg-blue-50 text-blue-500" : "bg-blue-100 text-blue-600"
           }`}
         >
           {RECEPTION ? (
@@ -89,12 +86,8 @@ const TransactionItem = ({ transaction = [] }) => {
           </p>
         </div>
       </div>
-      <p
-        className={`font-medium ${
-          ENVOI ? "text-blue-600" : "text-blue-900"
-        }`}
-      >
-        {transaction?.montant}
+      <p className={`font-medium ${ENVOI ? "text-blue-600" : "text-blue-900"}`}>
+        {transaction?.montant} £
       </p>
     </motion.div>
   );

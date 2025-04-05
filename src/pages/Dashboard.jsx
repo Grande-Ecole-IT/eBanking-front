@@ -1,19 +1,20 @@
 /* eslint-disable no-unused-vars */
 import { AnimatePresence, motion } from "framer-motion";
+import { BarChart2, Calendar, CreditCard, PieChart } from "lucide-react";
 import { useEffect, useState } from "react";
-import logo from "../assets/Logo.png";
+import { BiDownload, BiSend } from "react-icons/bi";
+import { FiZap } from "react-icons/fi";
+import { useNavigate } from "react-router";
 import ChatBot from "../components/ChatBot";
+import FinancialLineChart from "../components/FinancialLineChart";
+import Navbar from "../components/Navbar";
+import TransactionForm from "../components/TransactionForm";
 import TransactionList from "../components/TransactionList";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
 import { client, DATABASE_ID } from "../lib/appwrite";
-import { getRecentTransactionsByUser } from "../services/databases/transactions";
-import { useNavigate } from "react-router";
+import { getTransactionsByUser } from "../services/databases/transactions";
 import { getAllUsers } from "../services/databases/users";
-import { BiDownload, BiSend } from "react-icons/bi";
-import { BarChart2, Calendar, CreditCard, PieChart, Settings } from "lucide-react";
-import TransactionForm from "../components/TransactionForm";
-import FinancialLineChart from "../components/FinancialLineChart";
 
 const Dashboard = () => {
   const [chatbotOpen, setChatbotOpen] = useState(false);
@@ -23,7 +24,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     try {
-      getRecentTransactionsByUser(provider?.user?.$id).then((res) => {
+      getTransactionsByUser(provider?.user?.$id).then((res) => {
         setTransactions(res.documents);
       });
     } catch (error) {
@@ -50,75 +51,6 @@ const Dashboard = () => {
 
     return () => unsubscribe();
   }, []);
-
-  const historicals = [
-    {
-      id: 1,
-      date: "Aujourd'hui, 09:42",
-      device: "iPhone 13 Pro",
-      location: "Paris, France",
-      status: "success",
-      ipAddress: "192.168.1.45",
-    },
-    {
-      id: 2,
-      date: "Hier, 22:15",
-      device: "MacBook Pro (M1)",
-      location: "Lyon, France",
-      status: "success",
-      ipAddress: "85.203.45.12",
-    },
-    {
-      id: 3,
-      date: "05/06/2023, 14:30",
-      device: "Samsung Galaxy S21",
-      location: "Marseille, France",
-      status: "failed",
-      ipAddress: "176.129.78.34",
-      reason: "Mot de passe incorrect",
-    },
-    {
-      id: 4,
-      date: "04/06/2023, 08:12",
-      device: "iPad Air",
-      location: "Bordeaux, France",
-      status: "success",
-      ipAddress: "91.167.23.156",
-    },
-    {
-      id: 5,
-      date: "02/06/2023, 19:45",
-      device: "Windows PC (Chrome)",
-      location: "Toulouse, France",
-      status: "success",
-      ipAddress: "78.245.12.89",
-    },
-    {
-      id: 6,
-      date: "01/06/2023, 11:20",
-      device: "Android (Xiaomi Redmi Note 10)",
-      location: "Lille, France",
-      status: "failed",
-      ipAddress: "154.76.34.98",
-      reason: "Tentative de mot de passe expiré",
-    },
-    {
-      id: 7,
-      date: "30/05/2023, 16:33",
-      device: "iPhone 12",
-      location: "Nice, France",
-      status: "success",
-      ipAddress: "92.154.76.211",
-    },
-    {
-      id: 8,
-      date: "28/05/2023, 09:15",
-      device: "MacBook Air (M2)",
-      location: "Nantes, France",
-      status: "success",
-      ipAddress: "85.203.45.12",
-    },
-  ];
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -160,125 +92,16 @@ const Dashboard = () => {
       <Background />
       <div className="relative z-10 container mx-auto px-4 sm:px-6 pb-10">
         <ChatBot isOpen={chatbotOpen} onClose={() => setChatbotOpen(false)} />
-
-        {/* Header simplifié comme dans le screenshot */}
-        <header className="sticky top-0 z-20 shadow-sm">
-          <div className="container mx-auto px-4">
-            <div className="flex justify-between items-center">
-              {/* Logo */}
-              <div className="flex items-center">
-                <img src={logo} alt="Bankio" className="w-20" />
-              </div>
-
-              {/* Navigation centrale */}
-              <nav className="hidden md:flex items-center space-x-8 mx-6">
-                <a
-                  href="#"
-                  className="text-blue-600 font-medium border-b-2 border-blue-600 pb-2"
-                >
-                  Dashboard
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-500 hover:text-blue-600 transition-colors duration-200"
-                >
-                  Transactions
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-500 hover:text-blue-600 transition-colors duration-200"
-                >
-                  Analysis
-                </a>
-              </nav>
-
-              {/* Section droite avec search, notifications et profil */}
-              <div className="flex items-center space-x-6">
-                {/* Icône de notifications */}
-                <button className="relative p-1 text-gray-500 hover:text-blue-600">
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                    />
-                  </svg>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-                </button>
-
-                {/* Profil utilisateur avec déconnexion */}
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-3">
-                    <img
-                      src={user?.picture}
-                      alt="Profile"
-                      className="w-10 h-10 rounded-full border-2 border-blue-100"
-                    />
-                    <div className="hidden md:block">
-                      <h3 className="text-sm font-semibold text-gray-800">
-                        {user?.name}
-                      </h3>
-                      <p className="text-xs text-gray-500">{user?.email}</p>
-                    </div>
-                  </div>
-
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="text-gray-500 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition-colors"
-                    title="Déconnexion"
-                    onClick={handleLogout}
-                  >
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                  </motion.button>
-                </div>
-              </div>
-            </div>
-
-            {/* Navigation mobile */}
-            <nav className="flex md:hidden items-center justify-center mt-4 overflow-x-auto pb-2 space-x-6">
-              <a
-                href="#"
-                className="text-blue-600 font-medium px-2 whitespace-nowrap"
-              >
-                All
-              </a>
-              <a href="#" className="text-gray-500 px-2 whitespace-nowrap">
-                Transactions
-              </a>
-              <a href="#" className="text-gray-500 px-2 whitespace-nowrap">
-                Analysis
-              </a>
-            </nav>
-          </div>
-        </header>
+        <Navbar />
 
         <div className="grid grid-cols-[1fr_0.72fr] mt-6 space-x-6">
           <div className="flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-evenly">
               {/* Balance Card */}
               <div className="bg-white rounded-3xl p-6 shadow-sm">
-                <h2 className="text-gray-600 mb-2">Total Balance</h2>
+                <h2 className="text-gray-600 mb-2">Total Solde</h2>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-bold">$31,180</span>
+                  <span className="text-4xl font-bold">£31,180</span>
                   <span className="text-gray-400">.24</span>
                 </div>
 
@@ -288,11 +111,11 @@ const Dashboard = () => {
                     className="flex items-center gap-2 bg-blue-100/50 text-blue-700 px-6 py-2 rounded-full hover:bg-blue-100"
                   >
                     <BiSend size={20} />
-                    Send
+                    Envoyer
                   </button>
                   <button className="flex items-center gap-2 bg-blue-100/50 text-blue-700 px-6 py-2 rounded-full hover:bg-blue-100">
                     <BiDownload size={20} />
-                    Receive
+                    Demander
                   </button>
                 </div>
 
@@ -319,7 +142,7 @@ const Dashboard = () => {
                 {/* Spending Card */}
                 <div className="bg-blue-200 rounded-3xl p-6 shadow-sm h-full">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-semibold">Spending</h2>
+                    <h2 className="text-lg font-semibold">Depense</h2>
                     <button className="text-gray-600 hover:text-gray-900">
                       <Calendar size={20} />
                     </button>
@@ -328,12 +151,10 @@ const Dashboard = () => {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <BarChart2 className="text-blue-500" size={20} />
-                        <span className="text-gray-600">Monthly</span>
+                        <span className="text-gray-600">Mensuel</span>
                       </div>
-                      <div className="text-2xl font-semibold">$2,778.00</div>
-                      <div className="text-sm text-gray-500">
-                        from $3,042.00
-                      </div>
+                      <div className="text-2xl font-semibold">£2,778.00</div>
+                      <div className="text-sm text-gray-500">à $3,042.00</div>
                     </div>
                     <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
                       <PieChart className="text-blue-500" size={32} />
@@ -341,22 +162,35 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* How to Save Money Card */}
+                {/* AI assistant */}
                 <div className="bg-white rounded-3xl p-6 shadow-sm h-full">
-                  <h2 className="text-lg font-semibold mb-4">
-                    How to Save Money
-                  </h2>
-                  <button className="w-full text-left hover:bg-gray-50 p-4 rounded-xl">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-medium">Learn More</div>
-                        <div className="text-sm text-gray-500">
-                          Save money for future
-                        </div>
-                      </div>
-                      <Settings className="text-gray-400" size={20} />
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold">FlashPay AI</h2>
+                    <div className="flex items-center bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs">
+                      <FiZap className="mr-1" size={14} />
+                      Nouveau
                     </div>
-                  </button>
+                  </div>
+
+                  <p className="text-gray-600 text-sm mb-4">
+                    Notre assistant intelligent peut exécuter des actions par
+                    message vocal ou texte.
+                  </p>
+
+                  <p className="text-xs text-gray-400 my-4 text-center">
+                    Essayez de dire : "Envoie 50€ à Marie pour le dîner"
+                  </p>
+                  <motion.button
+                    onClick={() => setChatbotOpen(true)}
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-4 bg-gradient-to-r from-blue-50 to-white hover:from-blue-100 hover:to-blue-50 border border-blue-200 "
+                  >
+                    <span className="font-medium text-gray-800">Démarrer</span>
+                    <span className="text-xs bg-blue-500/10 text-blue-600 px-2 py-1 rounded-md">
+                      Ctrl+K
+                    </span>
+                  </motion.button>
                 </div>
               </div>
             </div>

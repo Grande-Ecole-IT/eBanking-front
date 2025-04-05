@@ -1,33 +1,57 @@
 /* eslint-disable no-unused-vars */
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
+import { FiCpu, FiDatabase, FiServer, FiWifi } from "react-icons/fi";
 
 const MainLoader = () => {
   const [progress, setProgress] = useState(0);
+  const controls = useAnimation();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => (prev >= 100 ? 0 : prev + 2));
-    }, 100);
+    const animateLoader = async () => {
+      await controls.start("visible");
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          const newProgress = prev >= 100 ? 0 : prev + Math.random() * 5 + 1;
+          if (newProgress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => controls.start("complete"), 500);
+          }
+          return newProgress;
+        });
+      }, 100 + Math.random() * 100);
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    };
+
+    animateLoader();
+  }, [controls]);
+
+  const variants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+    complete: { opacity: 0, transition: { duration: 0.5 } },
+  };
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 to-blue-950 backdrop-blur-md"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900 backdrop-blur-md"
+      initial="hidden"
+      animate={controls}
+      variants={variants}
     >
-      {/* Cercle holographique */}
-      <div className="relative h-64 w-64 mb-8">
-        {/* Cercle externe animé */}
+      {/* Sphère holographique */}
+      <div className="relative h-50 w-50 mb-8">
+        {/* Noyau pulsant */}
         <motion.div
-          className="absolute inset-0 rounded-full border-4 border-blue-400 border-opacity-30"
+          className="absolute inset-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 shadow-2xl shadow-cyan-400/30"
           animate={{
             scale: [1, 1.1, 1],
-            opacity: [0.6, 0.9, 0.6],
+            boxShadow: [
+              "0 0 30px rgba(34, 211, 238, 0.3)",
+              "0 0 60px rgba(34, 211, 238, 0.5)",
+              "0 0 30px rgba(34, 211, 238, 0.3)",
+            ],
           }}
           transition={{
             duration: 3,
@@ -36,134 +60,164 @@ const MainLoader = () => {
           }}
         />
 
-        {/* Cercle intermédiaire */}
-        <motion.div
-          className="absolute inset-4 rounded-full border-2 border-blue-300 border-opacity-50"
-          animate={{
-            rotate: 360,
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
+        {/* Anneaux rotatifs */}
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            className={`absolute border rounded-full ${
+              i === 0
+                ? "inset-0 border-cyan-300/30 border-t-cyan-300/80"
+                : i === 1
+                ? "inset-6 border-blue-300/20 border-b-blue-300/60"
+                : "inset-12 border-indigo-300/10 border-r-indigo-300/40"
+            }`}
+            animate={{
+              rotate: 360,
+              scale: [1, i === 1 ? 1.05 : 0.95, 1],
+            }}
+            transition={{
+              duration: 8 + i * 3,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+        ))}
 
-        {/* Cercle central avec effet de pulsation */}
-        <motion.div
-          className="absolute inset-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-400 shadow-lg shadow-blue-500/30"
+        {/* Icônes flottantes */}
+        {[
+          { icon: <FiServer size={20} />, color: "text-cyan-300" },
+          { icon: <FiDatabase size={20} />, color: "text-blue-300" },
+          { icon: <FiCpu size={20} />, color: "text-indigo-300" },
+          { icon: <FiWifi size={20} />, color: "text-purple-300" },
+        ].map((item, i) => (
+          <motion.div
+            key={i}
+            className={`absolute ${item.color}`}
+            style={{
+              top: "50%",
+              left: "50%",
+              x: "-50%",
+              y: "-50%",
+              transform: `rotate(${i * 90}deg) translateX(60px) rotate(-${
+                i * 90
+              }deg)`,
+            }}
+            animate={{
+              y: [0, -10, 0],
+              opacity: [0.8, 1, 0.8],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              delay: i * 0.5,
+              ease: "easeInOut",
+            }}
+          >
+            {item.icon}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Barre de progression style high-tech */}
+      <div className="w-80 mb-6">
+        <div className="flex justify-between text-xs text-cyan-100 mb-1">
+          <span>INITIALISATION</span>
+          <span>{Math.min(progress, 100)}%</span>
+        </div>
+        <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 relative"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ type: "spring", damping: 10 }}
+          >
+            <motion.div
+              className="absolute right-0 top-0 h-full w-1 bg-white"
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Texte de statut animé */}
+      <div className="text-center">
+        <motion.h2
+          className="text-2xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent mb-2"
           animate={{
-            scale: [1, 1.05, 1],
-            boxShadow: [
-              "0 0 20px rgba(96, 165, 250, 0.3)",
-              "0 0 40px rgba(96, 165, 250, 0.5)",
-              "0 0 20px rgba(96, 165, 250, 0.3)",
+            textShadow: [
+              "0 0 8px rgba(34, 211, 238, 0)",
+              "0 0 8px rgba(34, 211, 238, 0.3)",
+              "0 0 8px rgba(34, 211, 238, 0)",
             ],
           }}
           transition={{
-            duration: 2,
+            duration: 3,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         >
-          {/* Points tournants */}
-          {[...Array(8)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute h-3 w-3 bg-blue-200 rounded-full"
-              style={{
-                top: "50%",
-                left: "50%",
-                x: "-50%",
-                y: "-50%",
-                transform: `rotate(${i * 45}deg) translateX(40px) rotate(-${
-                  i * 45
-                }deg)`,
-              }}
-              animate={{
-                opacity: [0.5, 1, 0.5],
-                scale: [1, 1.3, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.1,
-                ease: "easeInOut",
-              }}
-            />
-          ))}
-        </motion.div>
+          {progress < 30
+            ? "DÉMARRAGE DU SYSTÈME"
+            : progress < 70
+            ? "CHARGEMENT DES DONNÉES"
+            : "CONNEXION EN COURS"}
+        </motion.h2>
+
+        <motion.p
+          className="text-cyan-200 text-sm font-mono"
+          animate={{
+            opacity: [0.6, 1, 0.6],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          {progress < 30
+            ? "> Vérification des composants..."
+            : progress < 70
+            ? "> Analyse des données..."
+            : "> Établissement de la connexion..."}
+        </motion.p>
       </div>
 
-      {/* Barre de progression futuriste */}
-      <div className="w-72 h-2 bg-blue-900 rounded-full overflow-hidden mb-6">
-        <motion.div
-          className="h-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400"
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.5 }}
-        />
+      {/* Fond style grille hexagonale */}
+      <div className="absolute inset-0 overflow-hidden opacity-10 pointer-events-none">
+        <div className="absolute inset-0 bg-grid"></div>
       </div>
 
-      {/* Texte animé */}
-      <motion.h2
-        className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-blue-100 bg-clip-text text-transparent mb-2"
-        animate={{
-          opacity: [0.8, 1, 0.8],
-          y: [0, -5, 0],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        Chargement du système
-      </motion.h2>
-
-      <motion.p
-        className="text-blue-300 text-sm"
-        animate={{
-          opacity: [0.6, 1, 0.6],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        {progress < 50
-          ? "Analyse des modules..."
-          : progress < 80
-          ? "Configuration en cours..."
-          : "Finalisation..."}
-      </motion.p>
-
-      {/* Effets de particules */}
+      {/* Effet "pluie de code" */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(30)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute bg-blue-400 rounded-full"
+            className="absolute text-cyan-400/30 font-mono text-xs"
             style={{
-              width: `${Math.random() * 4 + 2}px`,
-              height: `${Math.random() * 4 + 2}px`,
-              top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              opacity: 0.3,
+              top: "-20px",
             }}
             animate={{
-              y: [0, -50, -100],
-              x: [0, Math.random() * 40 - 20, Math.random() * 40 - 20],
-              opacity: [0, 0.5, 0],
+              y: `calc(100vh + 20px)`,
+              opacity: [0, Math.random(), 0],
             }}
             transition={{
-              duration: Math.random() * 5 + 5,
+              duration: 10 + Math.random() * 10,
               repeat: Infinity,
               delay: Math.random() * 5,
               ease: "linear",
             }}
-          />
+          >
+            {Math.random() > 0.5 ? "1" : "0"}
+            {Math.random() > 0.5 ? "1" : "0"}
+            {Math.random() > 0.5 ? "1" : "0"}
+            {Math.random() > 0.5 ? "1" : "0"}
+          </motion.div>
         ))}
       </div>
     </motion.div>

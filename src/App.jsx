@@ -23,7 +23,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/transaction" element={<TransactionPage />} />
+          <Route
+            path="/transaction"
+            element={
+              <ProtectedRoute>
+                <TransactionPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </AuthContextProvider>
     </Router>

@@ -12,6 +12,7 @@ import {
   FiUser,
 } from "react-icons/fi";
 import Loader from "../components/Loader";
+import Navbar from "../components/Navbar";
 import { useAuth } from "../hooks/useAuth";
 import Background from "../layout/Background";
 import { getTransactionsByUser } from "../services/databases/transactions";
@@ -35,7 +36,7 @@ const TransactionPage = () => {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const itemsPerPageOptions = [5, 10, 20, 50];
 
   // Chargement initial des données
@@ -197,9 +198,7 @@ const TransactionPage = () => {
         ? transaction.receiverId
         : transaction.senderId,
       otherPartyRole: isCurrentUserSender ? "Destinataire" : "Expéditeur",
-      // Le type affiché doit être basé sur notre perspective
       displayType: isCurrentUserSender ? "ENVOI" : "RECEPTION",
-      // Le signe du montant doit être basé sur notre perspective
       amountSign: isCurrentUserSender ? "-" : "+",
       amountColor: isCurrentUserSender ? "text-red-600" : "text-green-600",
     };
@@ -209,19 +208,12 @@ const TransactionPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Background />
 
-      <div className="container mx-auto px-4 py-8 relative z-10 max-w-7xl">
+      <div className="container mx-auto px-4  relative z-10 max-w-7xl">
         {/* Header */}
-        <header className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              Historique des Transactions
-            </h1>
-            <p className="text-gray-600">Gérez votre activité financière</p>
-          </div>
-        </header>
+        <Navbar />
 
         {/* Cartes de statistiques */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-5">
           <StatCard
             title="Solde Total"
             value={stats.balance}
