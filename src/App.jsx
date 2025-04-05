@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import TransactionPage from "./pages/TransactionPage";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/transaction" element={<TransactionPage />} />
         </Routes>
       </AuthContextProvider>
     </Router>
