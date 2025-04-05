@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 import { createTransaction } from "../services/databases/transactions";
+import { updateUserBalance } from "../services/databases/users";
 
 const TransactionForm = ({ onClose, users, transactionType }) => {
   const { user: currentUser } = useAuth();
@@ -26,6 +27,8 @@ const TransactionForm = ({ onClose, users, transactionType }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
+  console
+  .log(`Solde : ${currentUser?.solde}`)
   useEffect(() => {
     if (users) {
       const filtered = users.filter(
@@ -61,6 +64,8 @@ const TransactionForm = ({ onClose, users, transactionType }) => {
 
     try {
       if (transactionType === "ENVOI") {
+        const amount = currentUser.solde - formData.amount
+        updateUserBalance(currentUser.$id, amount)
         await createTransaction(
           currentUser.$id,
           formData.contactId,
@@ -69,6 +74,8 @@ const TransactionForm = ({ onClose, users, transactionType }) => {
           "ENVOI"
         );
       } else {
+        const amount = currentUser.solde + formData.amount
+        updateUserBalance(currentUser.$id, amount)
         await createTransaction(
           formData.contactId,
           currentUser.$id,

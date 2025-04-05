@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import React, { useState, useRef, useEffect } from "react";
 import AuthLayout from "../layout/AuthLayout";
 import Button from "../components/Button";
@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import { getAllUsers } from "../services/databases/users";
 
 function Login() {
+  const location = useLocation();
   const [users, setUsers] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
@@ -30,6 +31,11 @@ function Login() {
       setLoading(false);
     }
   };
+
+  // Récupération des données
+  const { state } = location;
+  const prefilledEmail = state?.email || "";
+  const prefilledPassword = state?.password || "";
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -91,6 +97,18 @@ function Login() {
 
     if (facialRecognitionActive) {
       startCamera();
+
+      setTimeout(() => {
+        try {
+          login(prefilledEmail, prefilledPassword).then(() =>
+            navigate("/dashboard")
+          );
+        } catch (error) {
+          console.error("Lodgin error:", error);
+        } finally {
+          setLoading(false);
+        }
+      }, 5000);
     }
 
     return () => {
@@ -129,7 +147,7 @@ function Login() {
     });
   }, []);
 
-  console.log(users)
+  console.log(users);
 
   return (
     <AuthLayout
