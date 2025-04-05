@@ -35,7 +35,12 @@ function Register() {
         formData.name,
         formData.identityPhoto
       );
-      navigate("/dashboard");
+      navigate("/login", {
+        state: {
+          email: formData.email,
+          password: formData.password,
+        },
+      });
     } catch (error) {
       console.error("Login error:", error);
     } finally {
