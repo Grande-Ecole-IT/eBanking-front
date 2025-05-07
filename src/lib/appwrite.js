@@ -2,7 +2,7 @@ import { Account, Client, Databases, ID, Storage, Query } from 'appwrite';
 
 const client = new Client()
     .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('flashpay'); 
+    .setProject('flashpay-netlify'); 
 
 const account = new Account(client);
 const databases = new Databases(client);
